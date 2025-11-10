@@ -11,6 +11,6 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class SearchProductionPlanRequest {
 
-  private final String title;      // 생산계획 제목
-  private final Status status;     // 생산계획 상태
+    private final String title; // 생산계획 제목
+    private final Status status; // 생산계획 상태
 }

@@ -10,16 +10,16 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class LocationResponse {
 
-  private final Long id;
+    private final Long id;
 
-  private final String rackNo;
+    private final String rackNo;
 
-  private final String levelNo;
+    private final String levelNo;
 
-  private final String binNo;
+    private final String binNo;
 
-  private final boolean filled;
+    private final boolean filled;
 
-  //warehouse id x -> warehouse api용
+    // warehouse id x -> warehouse api용
 
 }

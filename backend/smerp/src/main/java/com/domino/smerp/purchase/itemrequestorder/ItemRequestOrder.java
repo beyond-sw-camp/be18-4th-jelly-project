@@ -3,9 +3,8 @@ package com.domino.smerp.purchase.itemrequestorder;
 import com.domino.smerp.item.Item;
 import com.domino.smerp.purchase.requestorder.RequestOrder;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.math.BigDecimal;
+import lombok.*;
 
 @Entity
 @Getter
@@ -21,13 +20,11 @@ public class ItemRequestOrder {
     private Long itemRoId; // 품목발주 PK
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ro_id", nullable = false,
-            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "ro_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private RequestOrder requestOrder; // 발주 참조
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false,
-            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "item_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Item item; // 품목 참조
 
     @Column(name = "qty", nullable = false, precision = 12, scale = 3)

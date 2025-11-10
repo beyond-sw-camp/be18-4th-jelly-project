@@ -10,23 +10,22 @@ import org.springframework.data.domain.Sort;
 
 public class QuerydslUtils {
 
-  // 정렬을 위한 헬퍼 메소드
-  public static List<OrderSpecifier<?>> getSort(Sort sort,
-      Map<String, ? extends Path<? extends Comparable<?>>> mapping) {
-    List<OrderSpecifier<?>> orders = new ArrayList<>();
+    // 정렬을 위한 헬퍼 메소드
+    public static List<OrderSpecifier<?>> getSort(
+            Sort sort, Map<String, ? extends Path<? extends Comparable<?>>> mapping) {
+        List<OrderSpecifier<?>> orders = new ArrayList<>();
 
-    if (sort.isUnsorted()) {
-      return orders;
+        if (sort.isUnsorted()) {
+            return orders;
+        }
+
+        sort.forEach(order -> {
+            Path<? extends Comparable<?>> path = mapping.get(order.getProperty());
+            if (path != null) {
+                orders.add(new OrderSpecifier<>(order.isAscending() ? Order.ASC : Order.DESC, path));
+            }
+        });
+
+        return orders;
     }
-
-    sort.forEach(order -> {
-      Path<? extends Comparable<?>> path = mapping.get(order.getProperty());
-      if (path != null) {
-        orders.add(new OrderSpecifier<>(order.isAscending() ? Order.ASC : Order.DESC, path));
-      }
-    });
-
-    return orders;
-  }
-
 }

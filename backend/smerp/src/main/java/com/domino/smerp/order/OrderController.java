@@ -4,13 +4,12 @@ import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.order.dto.request.*;
 import com.domino.smerp.order.dto.response.*;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -39,7 +38,8 @@ public class OrderController {
 
     // 주문 수정 (PATCH)
     @PatchMapping("/{orderId}")
-    public ResponseEntity<UpdateOrderResponse> updateOrder(@PathVariable Long orderId, @RequestBody @Valid UpdateOrderRequest request) {
+    public ResponseEntity<UpdateOrderResponse> updateOrder(
+            @PathVariable Long orderId, @RequestBody @Valid UpdateOrderRequest request) {
         return ResponseEntity.ok(orderService.updateOrder(orderId, request));
     }
 
@@ -51,19 +51,22 @@ public class OrderController {
 
     // 주문 현황 (GET)
     @GetMapping("/summary")
-    public ResponseEntity<List<SummaryOrderResponse>> getOrderSummary(SearchSummaryOrderRequest condition, Pageable pageable) {
+    public ResponseEntity<List<SummaryOrderResponse>> getOrderSummary(
+            SearchSummaryOrderRequest condition, Pageable pageable) {
         return ResponseEntity.ok(orderService.getSummaryOrder(condition, pageable));
     }
 
     // 반품 등록 (POST)
     @PostMapping("/returns")
-    public ResponseEntity<CreateReturnOrderResponse> createReturn(@Valid @RequestBody CreateReturnOrderRequest request) {
+    public ResponseEntity<CreateReturnOrderResponse> createReturn(
+            @Valid @RequestBody CreateReturnOrderRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createReturnOrder(request));
     }
 
     // 반품 현황 조회 (GET)
     @GetMapping("/returns/summary")
-    public ResponseEntity<List<SummaryReturnOrderResponse>> getReturnOrdersSummary(SearchSummaryReturnOrderRequest condition, Pageable pageable) {
+    public ResponseEntity<List<SummaryReturnOrderResponse>> getReturnOrdersSummary(
+            SearchSummaryReturnOrderRequest condition, Pageable pageable) {
         return ResponseEntity.ok(orderService.getSummaryReturnOrders(condition, pageable));
     }
 }

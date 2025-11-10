@@ -1,11 +1,10 @@
 // file: dto/response/PurchaseOrderDetailItemResponse.java
 package com.domino.smerp.purchase.purchaseorder.dto.response;
 
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.math.BigDecimal;
 
 @Getter
 @Builder

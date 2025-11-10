@@ -18,18 +18,17 @@ import com.domino.smerp.order.dto.response.*;
 import com.domino.smerp.order.repository.OrderRepository;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,18 +43,19 @@ public class OrderServiceImpl implements OrderService {
 
     // 공용 조회용 메서드
     public Order findOrderById(Long orderId) {
-        return orderRepository.findByIdWithDetails(orderId)
+        return orderRepository
+                .findByIdWithDetails(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
     }
 
     private Client getClientByCompanyName(String companyName) {
-        return clientRepository.findByCompanyName(companyName)
+        return clientRepository
+                .findByCompanyName(companyName)
                 .orElseThrow(() -> new CustomException(ErrorCode.CLIENT_NOT_FOUND));
     }
 
     private User getUserByEmpNo(String empNo) {
-        return userRepository.findByEmpNo(empNo)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        return userRepository.findByEmpNo(empNo).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
     // 전표 생성
@@ -68,9 +68,8 @@ public class OrderServiceImpl implements OrderService {
     private ItemOrder toOrderItem(Order order, ItemOrderRequest itemReq) {
         Item item = itemServiceImpl.findItemById(itemReq.getItemId());
 
-        BigDecimal specialPrice = itemReq.getSpecialPrice() != null
-                ? itemReq.getSpecialPrice()
-                : item.getOutboundUnitPrice();
+        BigDecimal specialPrice =
+                itemReq.getSpecialPrice() != null ? itemReq.getSpecialPrice() : item.getOutboundUnitPrice();
 
         return ItemOrder.builder()
                 .order(order)
@@ -122,9 +121,9 @@ public class OrderServiceImpl implements OrderService {
 
         request.getItems().forEach(itemReq -> {
             validateQty(itemReq.getQty());
-            validateSpecialPrice(itemReq.getSpecialPrice());  // 검증
+            validateSpecialPrice(itemReq.getSpecialPrice()); // 검증
             ItemOrder itemOrder = toOrderItem(order, itemReq); // 객체 생성
-            order.addOrderItem(itemOrder);                  // 연관관계 세팅
+            order.addOrderItem(itemOrder); // 연관관계 세팅
         });
 
         orderRepository.save(order);
@@ -155,8 +154,8 @@ public class OrderServiceImpl implements OrderService {
         Order order = findOrderById(orderId);
         User user = getUserByEmpNo(request.getEmpNo());
 
-        Map<Long, ItemOrder> existingItems = order.getOrderItems().stream()
-                .collect(Collectors.toMap(ItemOrder::getItemOrderId, io -> io));
+        Map<Long, ItemOrder> existingItems =
+                order.getOrderItems().stream().collect(Collectors.toMap(ItemOrder::getItemOrderId, io -> io));
 
         List<ItemOrder> finalItems = new ArrayList<>();
 
@@ -181,9 +180,10 @@ public class OrderServiceImpl implements OrderService {
                         .order(order)
                         .item(item)
                         .qty(itemReq.getQty())
-                        .specialPrice(itemReq.getSpecialPrice() != null
-                                ? itemReq.getSpecialPrice()
-                                : item.getOutboundUnitPrice())
+                        .specialPrice(
+                                itemReq.getSpecialPrice() != null
+                                        ? itemReq.getSpecialPrice()
+                                        : item.getOutboundUnitPrice())
                         .build();
                 itemOrderRepository.save(newItem);
                 order.addOrderItem(newItem);
@@ -198,10 +198,7 @@ public class OrderServiceImpl implements OrderService {
 
         if (request.getDocumentDate() != null) {
             String newDocNo = documentNoGenerator.generateOrKeep(
-                    order.getDocumentNo(),
-                    request.getDocumentDate(),
-                    orderRepository::findMaxSequenceByPrefix
-            );
+                    order.getDocumentNo(), request.getDocumentDate(), orderRepository::findMaxSequenceByPrefix);
             order.updateDocumentInfo(newDocNo);
         }
 
@@ -218,7 +215,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public DeleteOrderResponse deleteOrder(Long orderId) {
-        Order order = orderRepository.findByIdForDelete(orderId)
+        Order order = orderRepository
+                .findByIdForDelete(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
         // 주문 상태가 APPROVED인 경우 삭제 불가
@@ -243,7 +241,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public CreateReturnOrderResponse createReturnOrder(CreateReturnOrderRequest request) {
         // 원 주문 조회
-        Order originalOrder = orderRepository.findByDocumentNo(request.getDocumentNo())
+        Order originalOrder = orderRepository
+                .findByDocumentNo(request.getDocumentNo())
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
         // 반품 가능 상태 검증
@@ -260,13 +259,12 @@ public class OrderServiceImpl implements OrderService {
         // 반품 전표번호 생성 (유틸 사용)
         String documentNo = documentNoGenerator.generateReturnDocumentNo(
                 originalOrder.getDocumentNo(),
-                existingReturns.stream().map(Order::getDocumentNo).toList()
-        );
+                existingReturns.stream().map(Order::getDocumentNo).toList());
 
         Order returnOrder = Order.builder()
                 .client(originalOrder.getClient())
                 .user(user)
-                .status(OrderStatus.COMPLETED)  // 반품은 상태 고정
+                .status(OrderStatus.COMPLETED) // 반품은 상태 고정
                 .remark(request.getRemark())
                 .documentNo(documentNo)
                 .deliveryDate(originalOrder.getDeliveryDate()) // delivery_at은 null 허용 안되니 원 주문값 복사
@@ -278,11 +276,11 @@ public class OrderServiceImpl implements OrderService {
 
         // 기존 반품 수량 누적
         Map<Long, BigDecimal> alreadyReturnedQty = new HashMap<>();
-        existingReturns.forEach(r -> r.getOrderItems().forEach(returnItem -> alreadyReturnedQty.merge(
-                returnItem.getItem().getItemId(),
-                returnItem.getQty().abs(),   // qty는 음수로 저장했으니 절댓값 처리
-                BigDecimal::add
-        )));
+        existingReturns.forEach(r -> r.getOrderItems()
+                .forEach(returnItem -> alreadyReturnedQty.merge(
+                        returnItem.getItem().getItemId(),
+                        returnItem.getQty().abs(), // qty는 음수로 저장했으니 절댓값 처리
+                        BigDecimal::add)));
 
         // 요청 품목 검증 및 반품 품목 생성
         request.getItems().forEach(itemReq -> {
@@ -323,7 +321,8 @@ public class OrderServiceImpl implements OrderService {
     // 반품 현황
     @Override
     @Transactional(readOnly = true)
-    public List<SummaryReturnOrderResponse> getSummaryReturnOrders(SearchSummaryReturnOrderRequest condition, Pageable pageable) {
+    public List<SummaryReturnOrderResponse> getSummaryReturnOrders(
+            SearchSummaryReturnOrderRequest condition, Pageable pageable) {
         return orderRepository.searchSummaryReturnOrders(condition, pageable);
     }
 }

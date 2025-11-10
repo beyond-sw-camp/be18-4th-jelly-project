@@ -9,4 +9,3 @@ public interface LogService {
 
     LogResponse findLogByLogId(Long logId);
 }
-

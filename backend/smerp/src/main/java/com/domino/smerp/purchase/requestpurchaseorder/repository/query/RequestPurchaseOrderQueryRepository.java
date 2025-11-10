@@ -6,5 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface RequestPurchaseOrderQueryRepository {
-    Page<RequestPurchaseOrder> searchRequestPurchaseOrder(SearchRequestPurchaseOrderRequest condition, Pageable pageable);
+    Page<RequestPurchaseOrder> searchRequestPurchaseOrder(
+            SearchRequestPurchaseOrderRequest condition, Pageable pageable);
 }

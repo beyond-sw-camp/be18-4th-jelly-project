@@ -1,24 +1,23 @@
 package com.domino.smerp.purchase.requestpurchaseorder.dto.response;
 
 import com.domino.smerp.purchase.requestpurchaseorder.constants.RequestPurchaseOrderStatus;
+import java.math.BigDecimal;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 @Getter
 @Builder
 @AllArgsConstructor
 public class RequestPurchaseOrderCreateResponse {
-    private final String documentNo;   // 전표 번호
+    private final String documentNo; // 전표 번호
 
     private String empNo; // 사번
 
     private final RequestPurchaseOrderStatus status; // 상태
 
-    private final String message;      // 처리 메시지
+    private final String message; // 처리 메시지
 
     private final List<ItemDetail> items; // 요청 품목 리스트
 
@@ -33,4 +32,3 @@ public class RequestPurchaseOrderCreateResponse {
         private final BigDecimal specialPrice; // 요청 시 선택 입력
     }
 }
-

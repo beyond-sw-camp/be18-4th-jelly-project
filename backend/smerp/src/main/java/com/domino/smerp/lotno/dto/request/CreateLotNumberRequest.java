@@ -14,17 +14,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CreateLotNumberRequest {
 
-  @NotNull(message = "품목코드를 입력해주세요")
-  private final Long itemId;
+    @NotNull(message = "품목코드를 입력해주세요") private final Long itemId;
 
-  @NotNull
-  private final Instant lotInstant;
+    @NotNull private final Instant lotInstant;
 
-  @NotNull(message = "수량을 입력해주세요")
-  @DecimalMin("0.000")
-  private final BigDecimal qty;
+    @NotNull(message = "수량을 입력해주세요") @DecimalMin("0.000")
+    private final BigDecimal qty;
 
-  @NotBlank(message = "사용상태를 설정해주세요")
-  private final String status;
-
+    @NotBlank(message = "사용상태를 설정해주세요")
+    private final String status;
 }

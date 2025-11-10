@@ -12,18 +12,19 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ItemListResponse {
 
-  private final Long itemId;
-  private final String name;
-  private final String rfid;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "UTC")
-  private final Instant createdAt;
+    private final Long itemId;
+    private final String name;
+    private final String rfid;
 
-  public static ItemListResponse fromEntity(Item item) {
-    return ItemListResponse.builder()
-        .itemId(item.getItemId())
-        .name(item.getName())
-        .rfid(item.getRfid())
-        .createdAt(item.getCreatedAt())
-        .build();
-  }
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "UTC")
+    private final Instant createdAt;
+
+    public static ItemListResponse fromEntity(Item item) {
+        return ItemListResponse.builder()
+                .itemId(item.getItemId())
+                .name(item.getName())
+                .rfid(item.getRfid())
+                .createdAt(item.getCreatedAt())
+                .build();
+    }
 }

@@ -27,75 +27,69 @@ import lombok.NoArgsConstructor;
 @Table(name = "location")
 public class Location {
 
-  @Id
-  @Column(name = "location_id")
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @Column(name = "location_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  //RFID-W01-R06-L02-B07
-  @Column(name = "bin_rfid", nullable = false)
-  private String binRfid;
+    // RFID-W01-R06-L02-B07
+    @Column(name = "bin_rfid", nullable = false)
+    private String binRfid;
 
-  //R01-20
-  @Column(name = "rack_no", nullable = false)
-  private String rackNo;
+    // R01-20
+    @Column(name = "rack_no", nullable = false)
+    private String rackNo;
 
-  //L01-05
-  @Column(name = "level_no", nullable = false)
-  private String levelNo;
+    // L01-05
+    @Column(name = "level_no", nullable = false)
+    private String levelNo;
 
-  //B01-30
-  @Column(name = "bin_no", nullable = false)
-  private String binNo;
+    // B01-30
+    @Column(name = "bin_no", nullable = false)
+    private String binNo;
 
-  @Column(nullable = false)
-  @Builder.Default
-  private boolean filled = false;
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean filled = false;
 
-  @Column(nullable = false, precision = 12, scale = 3)
-  @Builder.Default
-  private BigDecimal maxQty = new BigDecimal("500.00");
+    @Column(nullable = false, precision = 12, scale = 3)
+    @Builder.Default
+    private BigDecimal maxQty = new BigDecimal("500.00");
 
-  @Column(nullable = false, precision = 12, scale = 3)
-  @Builder.Default
-  private BigDecimal curQty = BigDecimal.ZERO;
+    @Column(nullable = false, precision = 12, scale = 3)
+    @Builder.Default
+    private BigDecimal curQty = BigDecimal.ZERO;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "warehouse_id",
-      nullable = false,
-      foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
-  )
-  private Warehouse warehouse;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouse_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Warehouse warehouse;
 
-  public static Location create(String rackNo, String levelNo, String binNo, String binRfid,
-      Warehouse warehouse) {
+    public static Location create(String rackNo, String levelNo, String binNo, String binRfid, Warehouse warehouse) {
 
-    return Location.builder()
-        .rackNo(rackNo)
-        .levelNo(levelNo)
-        .binNo(binNo)
-        .binRfid(binRfid)
-        .filled(false)
-        .warehouse(warehouse)
-        .build();
-  }
-
-  public void setFilled(boolean filled) {
-    this.filled = filled;
-  }
-
-  //warehouse에서 사용
-  public void setWarehouse(Warehouse warehouse){
-    this.warehouse = warehouse;
-
-    if(warehouse != null && !warehouse.getLocations().contains(this)){
-      warehouse.getLocations().add(this);
+        return Location.builder()
+                .rackNo(rackNo)
+                .levelNo(levelNo)
+                .binNo(binNo)
+                .binRfid(binRfid)
+                .filled(false)
+                .warehouse(warehouse)
+                .build();
     }
 
-  }
+    public void setFilled(boolean filled) {
+        this.filled = filled;
+    }
 
-  public void setCurQty(BigDecimal curQty) {
-    this.curQty = curQty;
-  }
+    // warehouse에서 사용
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
 
+        if (warehouse != null && !warehouse.getLocations().contains(this)) {
+            warehouse.getLocations().add(this);
+        }
+    }
+
+    public void setCurQty(BigDecimal curQty) {
+        this.curQty = curQty;
+    }
 }

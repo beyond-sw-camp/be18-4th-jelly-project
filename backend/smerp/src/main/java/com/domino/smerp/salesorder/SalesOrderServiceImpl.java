@@ -13,14 +13,13 @@ import com.domino.smerp.salesorder.dto.request.SearchSummarySalesOrderRequest;
 import com.domino.smerp.salesorder.dto.request.UpdateSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.response.*;
 import com.domino.smerp.salesorder.repository.SalesOrderRepository;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +45,8 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     @Transactional
     public CreateSalesOrderResponse createSalesOrder(CreateSalesOrderRequest request) {
         // 주문 전표로 Order 조회
-        Order order = orderRepository.findByDocumentNo(request.getOrderDocumentNo())
+        Order order = orderRepository
+                .findByDocumentNo(request.getOrderDocumentNo())
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
         // 주문 상태가 APPROVED가 아닌 경우 예외 발생
@@ -63,10 +63,8 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         }
 
         // 전표번호 생성
-        String documentNo = documentNoGenerator.generate(
-                request.getDocumentDate(),
-                salesOrderRepository::findMaxSequenceByPrefix
-        );
+        String documentNo =
+                documentNoGenerator.generate(request.getDocumentDate(), salesOrderRepository::findMaxSequenceByPrefix);
 
         SalesOrder salesOrder = SalesOrder.builder()
                 .order(order)
@@ -78,7 +76,6 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         salesOrderRepository.save(salesOrder);
         return CreateSalesOrderResponse.from(salesOrder);
     }
-
 
     // 판매 목록 조회
     @Override
@@ -95,7 +92,8 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     @Override
     @Transactional(readOnly = true)
     public DetailSalesOrderResponse getDetailSalesOrder(Long salesOrderId) {
-        SalesOrder salesOrder = salesOrderRepository.findByIdWithDetails(salesOrderId)
+        SalesOrder salesOrder = salesOrderRepository
+                .findByIdWithDetails(salesOrderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SALES_ORDER_NOT_FOUND));
         return DetailSalesOrderResponse.from(salesOrder);
     }
@@ -104,7 +102,8 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     @Override
     @Transactional
     public UpdateSalesOrderResponse updateSalesOrder(Long salesOrderId, UpdateSalesOrderRequest request) {
-        SalesOrder salesOrder = salesOrderRepository.findByIdWithDetails(salesOrderId)
+        SalesOrder salesOrder = salesOrderRepository
+                .findByIdWithDetails(salesOrderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SALES_ORDER_NOT_FOUND));
 
         if (salesOrder.getOrder().getStatus() == OrderStatus.COMPLETED) {
@@ -118,16 +117,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             String newDocNo = documentNoGenerator.generateOrKeep(
                     salesOrder.getDocumentNo(),
                     request.getDocumentDate(),
-                    salesOrderRepository::findMaxSequenceByPrefix
-            );
+                    salesOrderRepository::findMaxSequenceByPrefix);
             salesOrder.updateDocumentInfo(newDocNo);
         }
 
-
-        salesOrder.updateAll(
-                request.getRemark(),
-                request.getWarehouseName()
-        );
+        salesOrder.updateAll(request.getRemark(), request.getWarehouseName());
 
         return UpdateSalesOrderResponse.from(salesOrderRepository.save(salesOrder));
     }
@@ -136,7 +130,8 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     @Override
     @Transactional
     public DeleteSalesOrderResponse deleteSalesOrder(Long salesOrderId) {
-        SalesOrder salesOrder = salesOrderRepository.findById(salesOrderId)
+        SalesOrder salesOrder = salesOrderRepository
+                .findById(salesOrderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SALES_ORDER_NOT_FOUND));
 
         if (salesOrder.getOrder().getStatus() == OrderStatus.COMPLETED) {
@@ -150,8 +145,8 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     // 판매 현황
     @Override
     @Transactional(readOnly = true)
-    public List<SummarySalesOrderResponse> getSummarySalesOrder(SearchSummarySalesOrderRequest condition, Pageable pageable) {
+    public List<SummarySalesOrderResponse> getSummarySalesOrder(
+            SearchSummarySalesOrderRequest condition, Pageable pageable) {
         return salesOrderRepository.searchSummarySalesOrder(condition, pageable);
     }
-
 }

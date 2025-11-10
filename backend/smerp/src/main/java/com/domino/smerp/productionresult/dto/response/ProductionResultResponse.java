@@ -12,37 +12,29 @@ import lombok.Getter;
 @Getter
 public class ProductionResultResponse {
 
-  @NotNull
-  private final Long id;
+    @NotNull private final Long id;
 
-  //일자 no
-  @NotNull
-  private final String documentNo;
+    // 일자 no
+    @NotNull private final String documentNo;
 
-  //생산 공장
-  @NotNull
-  private final String factoryName;
+    // 생산 공장
+    @NotNull private final String factoryName;
 
-//  //받는 창고
-//  @NotNull
-//  private final String arriveWarehouseName;
+    //  //받는 창고
+    //  @NotNull
+    //  private final String arriveWarehouseName;
 
-  //품목명
-  @NotNull
-  private final String itemName;
+    // 품목명
+    @NotNull private final String itemName;
 
-  //규격
-  @NotNull
-  private final String specification;
+    // 규격
+    @NotNull private final String specification;
 
-  //수량
-  @NotNull
-  private final BigDecimal qty;
+    // 수량
+    @NotNull private final BigDecimal qty;
 
-  //작업지시서 no
-  @NotNull
-  private final Long workOrderId;
+    // 작업지시서 no
+    @NotNull private final Long workOrderId;
 
-  private final String remark;
-
+    private final String remark;
 }

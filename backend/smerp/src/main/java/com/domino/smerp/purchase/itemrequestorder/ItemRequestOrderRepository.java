@@ -1,10 +1,9 @@
 package com.domino.smerp.purchase.itemrequestorder;
 
 import com.domino.smerp.purchase.requestorder.RequestOrder;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface ItemRequestOrderRepository extends JpaRepository<ItemRequestOrder, Long> {
@@ -23,4 +22,3 @@ public interface ItemRequestOrderRepository extends JpaRepository<ItemRequestOrd
     // ✅ 특정 품목 name으로 조회
     List<ItemRequestOrder> findByItem_Name(String name);
 }
-

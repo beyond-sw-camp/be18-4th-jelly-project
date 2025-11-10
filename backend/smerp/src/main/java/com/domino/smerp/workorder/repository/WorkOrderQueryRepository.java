@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface WorkOrderQueryRepository {
 
-  Page<WorkOrder> searchWorkOrders(SearchWorkOrderRequest request, Pageable pageable);
+    Page<WorkOrder> searchWorkOrders(SearchWorkOrderRequest request, Pageable pageable);
 }

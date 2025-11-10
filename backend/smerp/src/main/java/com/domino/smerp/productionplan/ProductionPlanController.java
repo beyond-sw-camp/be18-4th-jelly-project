@@ -27,57 +27,52 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/plans")
 public class ProductionPlanController {
 
-  private final ProductionPlanService productionPlanService;
+    private final ProductionPlanService productionPlanService;
 
-  //목록 조회
-  @GetMapping
-  public ResponseEntity<ProductionPlanListResponse> getAllProductionPlans() {
-    ProductionPlanListResponse productionPlanListResponse = productionPlanService.getAllProductionPlans();
-    return ResponseEntity.status(200).body(productionPlanListResponse);
-  }
+    // 목록 조회
+    @GetMapping
+    public ResponseEntity<ProductionPlanListResponse> getAllProductionPlans() {
+        ProductionPlanListResponse productionPlanListResponse = productionPlanService.getAllProductionPlans();
+        return ResponseEntity.status(200).body(productionPlanListResponse);
+    }
 
-  //검색
-  @GetMapping("/search")
-  public ResponseEntity<PageResponse<SearchProductionPlanListResponse>> getLotNumbers(
-      final @ModelAttribute SearchProductionPlanRequest keyword,
-      final Pageable pageable) {
-    return ResponseEntity.ok(productionPlanService.searchProductionPlans(keyword, pageable));
-  }
+    // 검색
+    @GetMapping("/search")
+    public ResponseEntity<PageResponse<SearchProductionPlanListResponse>> getLotNumbers(
+            final @ModelAttribute SearchProductionPlanRequest keyword, final Pageable pageable) {
+        return ResponseEntity.ok(productionPlanService.searchProductionPlans(keyword, pageable));
+    }
 
+    // 상세 조회
+    @GetMapping("/{plan-id}")
+    public ResponseEntity<ProductionPlanResponse> getProductionPlan(@PathVariable("plan-id") Long planId) {
+        ProductionPlanResponse productionPlanResponse = productionPlanService.getProductionPlan(planId);
+        return ResponseEntity.status(200).body(productionPlanResponse);
+    }
 
-  //상세 조회
-  @GetMapping("/{plan-id}")
-  public ResponseEntity<ProductionPlanResponse> getProductionPlan(
-      @PathVariable("plan-id") Long planId) {
-    ProductionPlanResponse productionPlanResponse = productionPlanService.getProductionPlan(planId);
-    return ResponseEntity.status(200).body(productionPlanResponse);
-  }
+    // 생성
+    @PostMapping
+    public ResponseEntity<ProductionPlanResponse> createProductionPlan(
+            @Valid @RequestBody CreateProductionPlanRequest createProductionPlanRequest) {
+        ProductionPlanResponse productionPlanResponse =
+                productionPlanService.createProductionPlan(createProductionPlanRequest);
+        return ResponseEntity.status(201).body(productionPlanResponse);
+    }
 
-  //생성
-  @PostMapping
-  public ResponseEntity<ProductionPlanResponse> createProductionPlan(
-      @Valid @RequestBody CreateProductionPlanRequest createProductionPlanRequest) {
-    ProductionPlanResponse productionPlanResponse = productionPlanService.createProductionPlan(
-        createProductionPlanRequest);
-    return ResponseEntity.status(201).body(productionPlanResponse);
-  }
+    // 수정
+    @PatchMapping("/{plan-id}")
+    public ResponseEntity<ProductionPlanResponse> updateProductionPlan(
+            @PathVariable("plan-id") Long planId,
+            @Valid @RequestBody UpdateProductionPlanRequest updateProductionPlanRequest) {
+        ProductionPlanResponse productionPlanResponse =
+                productionPlanService.updateProductionPlan(planId, updateProductionPlanRequest);
+        return ResponseEntity.status(200).body(productionPlanResponse);
+    }
 
-  //수정
-  @PatchMapping("/{plan-id}")
-  public ResponseEntity<ProductionPlanResponse> updateProductionPlan(
-      @PathVariable("plan-id") Long planId,
-      @Valid @RequestBody UpdateProductionPlanRequest updateProductionPlanRequest) {
-    ProductionPlanResponse productionPlanResponse = productionPlanService.updateProductionPlan(
-        planId, updateProductionPlanRequest);
-    return ResponseEntity.status(200).body(productionPlanResponse);
-  }
-
-  //삭제(soft delete) - hard delete x, 취소는 로그에서
-  @DeleteMapping("/{plan-id}")
-  public ResponseEntity deleteProductionPlan(@PathVariable("plan-id") Long planId) {
-    productionPlanService.softDeleteProductionPlan(planId);
-    return ResponseEntity.status(204).build();
-  }
-
-
+    // 삭제(soft delete) - hard delete x, 취소는 로그에서
+    @DeleteMapping("/{plan-id}")
+    public ResponseEntity deleteProductionPlan(@PathVariable("plan-id") Long planId) {
+        productionPlanService.softDeleteProductionPlan(planId);
+        return ResponseEntity.status(204).build();
+    }
 }

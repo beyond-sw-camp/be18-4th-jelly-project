@@ -6,5 +6,5 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class BomChangedEvent {
-  private final Long changedItemId;
+    private final Long changedItemId;
 }

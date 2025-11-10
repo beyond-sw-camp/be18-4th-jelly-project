@@ -1,5 +1,10 @@
 package com.domino.smerp.order;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
 import com.domino.smerp.client.Client;
 import com.domino.smerp.client.ClientRepository;
 import com.domino.smerp.common.exception.CustomException;
@@ -15,22 +20,16 @@ import com.domino.smerp.order.dto.response.CreateOrderResponse;
 import com.domino.smerp.order.repository.OrderRepository;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceImplTest {
@@ -70,18 +69,19 @@ class OrderServiceImplTest {
                 .empNo("EMP001")
                 .deliveryDate(deliveryDate)
                 .remark("테스트 주문")
-                .items(List.of(
-                        ItemOrderRequest.builder()
-                                .itemId(1L)
-                                .qty(BigDecimal.valueOf(10))
-                                .specialPrice(BigDecimal.valueOf(10000))
-                                .build()
-                ))
+                .items(List.of(ItemOrderRequest.builder()
+                        .itemId(1L)
+                        .qty(BigDecimal.valueOf(10))
+                        .specialPrice(BigDecimal.valueOf(10000))
+                        .build()))
                 .build();
 
         Client client = Client.builder().clientId(1L).companyName("도미노상사").build();
         User user = User.builder().userId(1L).empNo("EMP001").build();
-        Item item = Item.builder().itemId(1L).outboundUnitPrice(BigDecimal.valueOf(9000)).build();
+        Item item = Item.builder()
+                .itemId(1L)
+                .outboundUnitPrice(BigDecimal.valueOf(9000))
+                .build();
 
         when(clientRepository.findByCompanyName(anyString())).thenReturn(Optional.of(client));
         when(userRepository.findByEmpNo(anyString())).thenReturn(Optional.of(user));
@@ -109,13 +109,11 @@ class OrderServiceImplTest {
                 .empNo("EMP001")
                 .deliveryDate(LocalDate.now())
                 .remark("테스트")
-                .items(List.of(
-                        ItemOrderRequest.builder()
-                                .itemId(1L)
-                                .qty(BigDecimal.valueOf(1))
-                                .specialPrice(BigDecimal.valueOf(1000))
-                                .build()
-                ))
+                .items(List.of(ItemOrderRequest.builder()
+                        .itemId(1L)
+                        .qty(BigDecimal.valueOf(1))
+                        .specialPrice(BigDecimal.valueOf(1000))
+                        .build()))
                 .build();
 
         when(clientRepository.findByCompanyName(anyString())).thenReturn(Optional.empty());
@@ -157,10 +155,7 @@ class OrderServiceImplTest {
     @DisplayName("주문 삭제 실패 - 이미 승인된 주문")
     void deleteOrder_fail_alreadyApproved() {
         // given
-        Order order = Order.builder()
-                .orderId(1L)
-                .status(OrderStatus.APPROVED)
-                .build();
+        Order order = Order.builder().orderId(1L).status(OrderStatus.APPROVED).build();
 
         when(orderRepository.findByIdForDelete(anyLong())).thenReturn(Optional.of(order));
 

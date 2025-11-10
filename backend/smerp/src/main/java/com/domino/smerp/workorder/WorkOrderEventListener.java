@@ -1,15 +1,15 @@
-//package com.domino.smerp.workorder;
+// package com.domino.smerp.workorder;
 //
-//import com.domino.smerp.productionplan.event.BOMReadyEvent;
-//import com.domino.smerp.workorder.stock.StockAboveItemOrderQtyEvent;
-//import com.domino.smerp.workorder.service.WorkOrderService;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.stereotype.Component;
-//import org.springframework.transaction.event.TransactionalEventListener;
+// import com.domino.smerp.productionplan.event.BOMReadyEvent;
+// import com.domino.smerp.workorder.stock.StockAboveItemOrderQtyEvent;
+// import com.domino.smerp.workorder.service.WorkOrderService;
+// import lombok.RequiredArgsConstructor;
+// import org.springframework.stereotype.Component;
+// import org.springframework.transaction.event.TransactionalEventListener;
 //
-//@Component
-//@RequiredArgsConstructor
-//public class WorkOrderEventListener {
+// @Component
+// @RequiredArgsConstructor
+// public class WorkOrderEventListener {
 //
 //  private final WorkOrderService workOrderService;
 //
@@ -26,4 +26,4 @@
 //  }
 //
 //
-//}
+// }

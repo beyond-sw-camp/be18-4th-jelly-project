@@ -44,9 +44,12 @@ public class ClientController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<ClientListResponse> searchClients(@RequestParam(required = false) final String companyName, @RequestParam(required = false) final String businessNumber,@PageableDefault(size = 20, sort = "clientId", direction = Sort.Direction.DESC) Pageable pageable) {
+    public PageResponse<ClientListResponse> searchClients(
+            @RequestParam(required = false) final String companyName,
+            @RequestParam(required = false) final String businessNumber,
+            @PageableDefault(size = 20, sort = "clientId", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        return clientService.searchClients(companyName,businessNumber,pageable);
+        return clientService.searchClients(companyName, businessNumber, pageable);
     }
 
     @GetMapping("/{clientId}")
@@ -58,8 +61,7 @@ public class ClientController {
 
     @PatchMapping("/{clientId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateClient(@PathVariable final Long clientId,
-        @Valid @RequestBody final UpdateClientRequest request) {
+    public void updateClient(@PathVariable final Long clientId, @Valid @RequestBody final UpdateClientRequest request) {
 
         clientService.updateClient(clientId, request);
     }

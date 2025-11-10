@@ -5,9 +5,8 @@ import com.domino.smerp.purchase.requestpurchaseorder.dto.request.RequestPurchas
 import com.domino.smerp.purchase.requestpurchaseorder.dto.request.RequestPurchaseOrderUpdateRequest;
 import com.domino.smerp.purchase.requestpurchaseorder.dto.request.SearchRequestPurchaseOrderRequest;
 import com.domino.smerp.purchase.requestpurchaseorder.dto.response.*;
-import org.springframework.data.domain.Pageable;
-
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface RequestPurchaseOrderService {
 
@@ -15,7 +14,8 @@ public interface RequestPurchaseOrderService {
     RequestPurchaseOrderCreateResponse createRequestPurchaseOrder(RequestPurchaseOrderCreateRequest request);
 
     // ✅ 구매요청 수정
-    RequestPurchaseOrderUpdateResponse updateRequestPurchaseOrder(Long rpoId, RequestPurchaseOrderUpdateRequest request);
+    RequestPurchaseOrderUpdateResponse updateRequestPurchaseOrder(
+            Long rpoId, RequestPurchaseOrderUpdateRequest request);
 
     PageResponse<RequestPurchaseOrderGetListResponse> searchRequestPurchaseOrders(
             SearchRequestPurchaseOrderRequest keyword, Pageable pageable);

@@ -28,23 +28,23 @@ public class Log {
     private Long logId;
 
     @Column(nullable = false)
-    private String actor;                 // 로그인 사용자
+    private String actor; // 로그인 사용자
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16)
-    private ActionType action;            // CREATE/UPDATE/DELETE
+    private ActionType action; // CREATE/UPDATE/DELETE
 
     @Column(nullable = false)
-    private String entity;                // 엔티티명 (ex. User, Order)
+    private String entity; // 엔티티명 (ex. User, Order)
 
     @Column(nullable = false)
-    private LocalDateTime doAt;           // 행위 시각
+    private LocalDateTime doAt; // 행위 시각
 
     @Lob
     @Column(columnDefinition = "LONGTEXT")
-    private String beforeData;            // UPDATE/DELETE의 변경 전 스냅샷
+    private String beforeData; // UPDATE/DELETE의 변경 전 스냅샷
 
     @Lob
     @Column(columnDefinition = "LONGTEXT")
-    private String afterData;             // CREATE/UPDATE의 변경 후 스냅샷
+    private String afterData; // CREATE/UPDATE의 변경 후 스냅샷
 }

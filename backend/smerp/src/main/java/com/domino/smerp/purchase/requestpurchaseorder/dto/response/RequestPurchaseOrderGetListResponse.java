@@ -3,16 +3,13 @@ package com.domino.smerp.purchase.requestpurchaseorder.dto.response;
 import com.domino.smerp.purchase.itemrequestpurchaseorder.ItemRequestPurchaseOrder;
 import com.domino.smerp.purchase.requestpurchaseorder.RequestPurchaseOrder;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder
@@ -20,7 +17,7 @@ import java.util.List;
 public class RequestPurchaseOrderGetListResponse {
     private final String documentNo;
 
-    private final String empNo;     // 사번
+    private final String empNo; // 사번
 
     private final String itemName;
 
@@ -48,9 +45,7 @@ public class RequestPurchaseOrderGetListResponse {
             totalQty = items.get(0).getQty();
         } else {
             itemName = items.get(0).getItem().getName() + " 외 " + (items.size() - 1) + "건";
-            totalQty = items.stream()
-                    .map(ItemRequestPurchaseOrder::getQty)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            totalQty = items.stream().map(ItemRequestPurchaseOrder::getQty).reduce(BigDecimal.ZERO, BigDecimal::add);
         }
 
         return RequestPurchaseOrderGetListResponse.builder()
@@ -64,4 +59,3 @@ public class RequestPurchaseOrderGetListResponse {
                 .build();
     }
 }
-

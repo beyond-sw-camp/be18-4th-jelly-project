@@ -12,6 +12,6 @@ import lombok.Getter;
 @Getter
 public class CurrentWorkOrderListResponse {
 
-  @Builder.Default
-  List<CurrentWorkOrderResponse> currentWorkOrderResponses = new ArrayList<>();
+    @Builder.Default
+    List<CurrentWorkOrderResponse> currentWorkOrderResponses = new ArrayList<>();
 }

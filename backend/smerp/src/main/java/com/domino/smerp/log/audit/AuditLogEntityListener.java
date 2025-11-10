@@ -17,12 +17,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AuditLogEntityListener {
-    //TODO 개인정보 마스킹
-    //스냅샷
-    private static final ThreadLocal<Map<Object, String>> SNAPSHOTS =
-        ThreadLocal.withInitial(WeakHashMap::new);
+    // TODO 개인정보 마스킹
+    // 스냅샷
+    private static final ThreadLocal<Map<Object, String>> SNAPSHOTS = ThreadLocal.withInitial(WeakHashMap::new);
 
-    private LogRepository logs() { return SpringContext.getBean(LogRepository.class); }
+    private LogRepository logs() {
+        return SpringContext.getBean(LogRepository.class);
+    }
 
     private String actor() {
         String actor = "";
@@ -33,8 +34,9 @@ public class AuditLogEntityListener {
         return actor;
     }
 
-    private String entityName(Object entity) { return entity.getClass().getSimpleName(); }
-
+    private String entityName(Object entity) {
+        return entity.getClass().getSimpleName();
+    }
 
     private String toLogString(Object entity) {
         if (entity == null) return null;
@@ -50,34 +52,34 @@ public class AuditLogEntityListener {
     @PostPersist
     public void afterCreate(Object entity) {
         Log log = Log.builder()
-                     .actor(actor())
-                     .action(ActionType.CREATE)
-                     .entity(entityName(entity))
-                     .doAt(LocalDateTime.now())
-                     .beforeData(null)
-                     .afterData(toLogString(entity))
-                     .build();
+                .actor(actor())
+                .action(ActionType.CREATE)
+                .entity(entityName(entity))
+                .doAt(LocalDateTime.now())
+                .beforeData(null)
+                .afterData(toLogString(entity))
+                .build();
         logs().save(log);
 
         SNAPSHOTS.get().put(entity, log.getAfterData());
     }
 
     @PreUpdate
-    public void beforeUpdate(Object entity) { }
+    public void beforeUpdate(Object entity) {}
 
     @PostUpdate
     public void afterUpdate(Object entity) {
         String before = SNAPSHOTS.get().get(entity);
-        String after  = toLogString(entity);
+        String after = toLogString(entity);
 
         Log log = Log.builder()
-                     .actor(actor())
-                     .action(ActionType.UPDATE)
-                     .entity(entityName(entity))
-                     .doAt(LocalDateTime.now())
-                     .beforeData(before)
-                     .afterData(after)
-                     .build();
+                .actor(actor())
+                .action(ActionType.UPDATE)
+                .entity(entityName(entity))
+                .doAt(LocalDateTime.now())
+                .beforeData(before)
+                .afterData(after)
+                .build();
         logs().save(log);
 
         SNAPSHOTS.get().put(entity, after);
@@ -93,13 +95,13 @@ public class AuditLogEntityListener {
         String before = SNAPSHOTS.get().get(entity);
 
         Log log = Log.builder()
-                     .actor(actor())
-                     .action(ActionType.DELETE)
-                     .entity(entityName(entity))
-                     .doAt(LocalDateTime.now())
-                     .beforeData(before)
-                     .afterData(null)
-                     .build();
+                .actor(actor())
+                .action(ActionType.DELETE)
+                .entity(entityName(entity))
+                .doAt(LocalDateTime.now())
+                .beforeData(before)
+                .afterData(null)
+                .build();
         logs().save(log);
 
         SNAPSHOTS.get().remove(entity);

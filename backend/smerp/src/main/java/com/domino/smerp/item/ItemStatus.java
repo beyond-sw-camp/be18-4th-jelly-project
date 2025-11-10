@@ -30,13 +30,12 @@ import org.hibernate.envers.Audited;
 @Table(name = "item_status")
 public class ItemStatus {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "item_status_id")
-  private Long itemStatusId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "item_status_id")
+    private Long itemStatusId;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "status", nullable = false)
-  private ItemStatusStatus status;
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private ItemStatusStatus status;
 }

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface BomCostCacheQueryRepository {
-  List<BomRequirementResponse> findResponsesByRootItemId(final Long rootItemId);
-  BigDecimal getTotalCost(final Long rootItemId);
+    List<BomRequirementResponse> findResponsesByRootItemId(final Long rootItemId);
 
+    BigDecimal getTotalCost(final Long rootItemId);
 }

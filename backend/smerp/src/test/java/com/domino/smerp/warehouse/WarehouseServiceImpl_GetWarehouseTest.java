@@ -19,49 +19,49 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class WarehouseServiceImpl_GetWarehouseTest{
+class WarehouseServiceImpl_GetWarehouseTest {
 
-  @Mock
-  private WarehouseRepository warehouseRepository;
+    @Mock
+    private WarehouseRepository warehouseRepository;
 
-  @InjectMocks
-  private WarehouseServiceImpl warehouseService;
+    @InjectMocks
+    private WarehouseServiceImpl warehouseService;
 
-  @Test
-  void getWarehouseById_success() {
-    // given
-    Warehouse mockWarehouse = Warehouse.builder()
-        .id(1L)
-        .name("Warehouse")
-        .divisionType(DivisionType.WAREHOUSE)
-        .active(true)
-        .address("address")
-        .zipcode("zipcode")
-        .build();
+    @Test
+    void getWarehouseById_success() {
+        // given
+        Warehouse mockWarehouse = Warehouse.builder()
+                .id(1L)
+                .name("Warehouse")
+                .divisionType(DivisionType.WAREHOUSE)
+                .active(true)
+                .address("address")
+                .zipcode("zipcode")
+                .build();
 
-    when(warehouseRepository.findById(1L)).thenReturn(Optional.of(mockWarehouse));
+        when(warehouseRepository.findById(1L)).thenReturn(Optional.of(mockWarehouse));
 
-    // when
-    WarehouseResponse response = warehouseService.getWarehouseById(1L);
+        // when
+        WarehouseResponse response = warehouseService.getWarehouseById(1L);
 
-    // then
-    assertNotNull(response);
-    assertEquals(1L, response.getId());
-    assertEquals("Warehouse", response.getName());
-    assertEquals(DivisionType.WAREHOUSE, response.getDivisionType());
-    assertEquals("address", response.getAddress());
-    assertEquals("zipcode", response.getZipcode());
-    assertEquals(true, response.isActive());
-  }
+        // then
+        assertNotNull(response);
+        assertEquals(1L, response.getId());
+        assertEquals("Warehouse", response.getName());
+        assertEquals(DivisionType.WAREHOUSE, response.getDivisionType());
+        assertEquals("address", response.getAddress());
+        assertEquals("zipcode", response.getZipcode());
+        assertEquals(true, response.isActive());
+    }
 
-  @Test
-  void getWarehouseById_notFound() {
-    // given
-    when(warehouseRepository.findById(1L)).thenReturn(Optional.empty());
+    @Test
+    void getWarehouseById_notFound() {
+        // given
+        when(warehouseRepository.findById(1L)).thenReturn(Optional.empty());
 
-    // when & then
-    assertThatThrownBy(() -> warehouseService.getWarehouseById(1L))
-        .isInstanceOf(CustomException.class)
-        .hasMessageContaining(ErrorCode.WAREHOUSE_NOT_FOUND.getMessage());
-  }
+        // when & then
+        assertThatThrownBy(() -> warehouseService.getWarehouseById(1L))
+                .isInstanceOf(CustomException.class)
+                .hasMessageContaining(ErrorCode.WAREHOUSE_NOT_FOUND.getMessage());
+    }
 }

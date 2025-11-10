@@ -10,7 +10,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class UpdateStockMovementRequest {
-  private final String itemName;
-  private final BigDecimal movedQty;
-  private final String userName;
+    private final String itemName;
+    private final BigDecimal movedQty;
+    private final String userName;
 }

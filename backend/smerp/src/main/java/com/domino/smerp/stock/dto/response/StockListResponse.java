@@ -12,6 +12,6 @@ import lombok.Getter;
 @Getter
 public class StockListResponse {
 
-  @Builder.Default
-  List<StockResponse> stockResponses = new ArrayList<>();
+    @Builder.Default
+    List<StockResponse> stockResponses = new ArrayList<>();
 }

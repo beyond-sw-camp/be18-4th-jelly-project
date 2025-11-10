@@ -29,9 +29,9 @@ public class LogController {
         return logService.findLogByLogId(logId);
     }
 
-//    @GetMapping
-//    @ResponseStatus(HttpStatus.OK)
-//    public LogResponse searchLogs (SearchLogRequest searchLogRequest) {
-//        return logService.searchLog(searchLogRequest);
-//    }
+    //    @GetMapping
+    //    @ResponseStatus(HttpStatus.OK)
+    //    public LogResponse searchLogs (SearchLogRequest searchLogRequest) {
+    //        return logService.searchLog(searchLogRequest);
+    //    }
 }

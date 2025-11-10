@@ -11,14 +11,13 @@ import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -38,8 +37,7 @@ public class RequestOrderQueryRepositoryImpl implements RequestOrderQueryReposit
                 "empNo", requestOrder.user.empNo,
                 "status", requestOrder.status,
                 "createdAt", requestOrder.createdAt,
-                "updatedAt", requestOrder.updatedAt
-        );
+                "updatedAt", requestOrder.updatedAt);
 
         // 정렬조건
         List<OrderSpecifier<?>> orders = QuerydslUtils.getSort(pageable.getSort(), sortMapping);
@@ -50,16 +48,17 @@ public class RequestOrderQueryRepositoryImpl implements RequestOrderQueryReposit
         // 결과 리스트
         List<RequestOrder> results = queryFactory
                 .selectFrom(requestOrder)
-                .join(requestOrder.client).fetchJoin()
-                .join(requestOrder.user).fetchJoin()
+                .join(requestOrder.client)
+                .fetchJoin()
+                .join(requestOrder.user)
+                .fetchJoin()
                 .where(
                         roIdEq(condition.getRoId()),
                         documentNoContains(condition.getDocumentNo()),
                         companyNameContains(condition.getCompanyName()),
                         empNoEq(condition.getEmpNo()),
                         statusEq(condition.getStatus()),
-                        remarkContains(condition.getRemark())
-                )
+                        remarkContains(condition.getRemark()))
                 .orderBy(orders.toArray(new OrderSpecifier[0]))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -77,8 +76,7 @@ public class RequestOrderQueryRepositoryImpl implements RequestOrderQueryReposit
                         companyNameContains(condition.getCompanyName()),
                         empNoEq(condition.getEmpNo()),
                         statusEq(condition.getStatus()),
-                        remarkContains(condition.getRemark())
-                );
+                        remarkContains(condition.getRemark()));
 
         return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
     }
@@ -88,11 +86,15 @@ public class RequestOrderQueryRepositoryImpl implements RequestOrderQueryReposit
     }
 
     private BooleanExpression documentNoContains(String documentNo) {
-        return (documentNo == null || documentNo.isEmpty()) ? null : QRequestOrder.requestOrder.documentNo.contains(documentNo);
+        return (documentNo == null || documentNo.isEmpty())
+                ? null
+                : QRequestOrder.requestOrder.documentNo.contains(documentNo);
     }
 
     private BooleanExpression companyNameContains(String companyName) {
-        return (companyName == null || companyName.isEmpty()) ? null : QRequestOrder.requestOrder.client.companyName.contains(companyName);
+        return (companyName == null || companyName.isEmpty())
+                ? null
+                : QRequestOrder.requestOrder.client.companyName.contains(companyName);
     }
 
     private BooleanExpression empNoEq(String empNo) {

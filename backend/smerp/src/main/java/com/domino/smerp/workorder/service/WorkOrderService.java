@@ -12,28 +12,27 @@ import org.springframework.data.domain.Pageable;
 
 public interface WorkOrderService {
 
-  //목록 조회
-  WorkOrderListResponse getAllWorkOrders();
+    // 목록 조회
+    WorkOrderListResponse getAllWorkOrders();
 
-  PageResponse<SearchWorkOrderListResponse> searchWorkOrders(
-      final SearchWorkOrderRequest keyword,
-      final Pageable pageable);
+    PageResponse<SearchWorkOrderListResponse> searchWorkOrders(
+            final SearchWorkOrderRequest keyword, final Pageable pageable);
 
-    //상세 조회
-  WorkOrderResponse getWorkOrderById(final Long id);
+    // 상세 조회
+    WorkOrderResponse getWorkOrderById(final Long id);
 
-  CurrentWorkOrderListResponse getAllCurrentWorkOrders();
+    CurrentWorkOrderListResponse getAllCurrentWorkOrders();
 
-  //생성
-  WorkOrderResponse createWorkOrder(final CreateWorkOrderRequest createWorkOrderRequest);
+    // 생성
+    WorkOrderResponse createWorkOrder(final CreateWorkOrderRequest createWorkOrderRequest);
 
-  //void createWorkOrderIfAvailable(final Long planId);
+    // void createWorkOrderIfAvailable(final Long planId);
 
-  //수정
-  WorkOrderResponse updateWorkOrder(final Long id, final UpdateWorkOrderRequest updateWorkOrderRequest);
+    // 수정
+    WorkOrderResponse updateWorkOrder(final Long id, final UpdateWorkOrderRequest updateWorkOrderRequest);
 
-  //삭제
-  WorkOrderResponse softDelete(final Long id);
+    // 삭제
+    WorkOrderResponse softDelete(final Long id);
 
-  void hardDeleteWorkOrder(final Long id);
+    void hardDeleteWorkOrder(final Long id);
 }

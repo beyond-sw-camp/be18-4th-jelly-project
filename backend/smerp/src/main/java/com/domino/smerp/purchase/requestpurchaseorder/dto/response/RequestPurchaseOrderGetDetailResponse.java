@@ -2,16 +2,13 @@ package com.domino.smerp.purchase.requestpurchaseorder.dto.response;
 
 import com.domino.smerp.purchase.itemrequestpurchaseorder.dto.request.ItemRequestPurchaseOrderDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder
@@ -19,7 +16,7 @@ import java.util.List;
 public class RequestPurchaseOrderGetDetailResponse {
     private final String documentNo;
 
-    private final String empNo;     // 사번
+    private final String empNo; // 사번
 
     private final LocalDate deliveryDate;
 
@@ -43,6 +40,5 @@ public class RequestPurchaseOrderGetDetailResponse {
         private final Double qty;
         private final Double inboundUnitPrice;
         private final BigDecimal specialPrice; // 요청 시 선택 입력
-
     }
 }

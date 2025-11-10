@@ -11,13 +11,13 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpdateWarehouseRequest {
 
-  private final String name;
+    private final String name;
 
-  private final DivisionType divisionType;
+    private final DivisionType divisionType;
 
-  private final Boolean active; //수정시 null 가능, getActive
+    private final Boolean active; // 수정시 null 가능, getActive
 
-  private final String address;
+    private final String address;
 
-  private final String zipcode;
+    private final String zipcode;
 }

@@ -1,5 +1,8 @@
 package com.domino.smerp.stockmovement.constants;
 
 public enum SrcDocType {
-  PURCHASE, SALE, PRODUCED, NONE
+    PURCHASE,
+    SALE,
+    PRODUCED,
+    NONE
 }

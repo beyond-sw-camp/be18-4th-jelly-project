@@ -12,8 +12,7 @@ public interface ClientService {
 
     void deleteClient(Long clientId);
 
-    PageResponse<ClientListResponse> searchClients(String companyName, String businessNumber,
-        Pageable pageable);
+    PageResponse<ClientListResponse> searchClients(String companyName, String businessNumber, Pageable pageable);
 
     ClientResponse findClient(Long clientId);
 

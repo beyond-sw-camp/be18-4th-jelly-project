@@ -10,10 +10,9 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-//생성, 수정 시 보여줄 위치들
+// 생성, 수정 시 보여줄 위치들
 public class LocationListResponse {
 
-  @Builder.Default
-  private final List<LocationResponse> locationResponses = new ArrayList<>();
-
+    @Builder.Default
+    private final List<LocationResponse> locationResponses = new ArrayList<>();
 }

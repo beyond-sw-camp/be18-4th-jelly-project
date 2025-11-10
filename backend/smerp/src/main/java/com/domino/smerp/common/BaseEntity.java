@@ -19,18 +19,16 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity {
 
-  @CreatedDate
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private Instant createdAt;
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
 
-  // @LastModifiedDate
-  @Column(name = "updated_at")
-  private Instant updatedAt;
+    // @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
-  @PreUpdate
-  public void preUpdate() {
-    this.updatedAt = Instant.now();
-  }
-
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = Instant.now();
+    }
 }
-

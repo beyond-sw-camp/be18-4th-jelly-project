@@ -11,35 +11,33 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface WarehouseRepository extends JpaRepository<Warehouse, Long>, WarehouseQueryRepository {
 
-  Boolean existsByName(String name);
+    Boolean existsByName(String name);
 
-//  Optional<Warehouse> findByItemId(Long itemId);
+    //  Optional<Warehouse> findByItemId(Long itemId);
 
-  @Query("SELECT DISTINCT w.id FROM Warehouse w " +
-      "WHERE NOT EXISTS (" +
-      "  SELECT l FROM Location l " +
-      "  WHERE l.warehouse = w AND l.filled = true" +
-      ")")
-  List<Warehouse> findWarehousesWithFilledFalseLocations();
+    @Query("SELECT DISTINCT w.id FROM Warehouse w " + "WHERE NOT EXISTS ("
+            + "  SELECT l FROM Location l "
+            + "  WHERE l.warehouse = w AND l.filled = true"
+            + ")")
+    List<Warehouse> findWarehousesWithFilledFalseLocations();
 
-  @Query("""
+    @Query(
+            """
     SELECT DISTINCT w
     FROM Warehouse w
     JOIN w.locations l
     WHERE COALESCE(l.curQty, 0) < l.maxQty
   """)
-  List<Warehouse> findAvailableWarehousesWithCurQty();
+    List<Warehouse> findAvailableWarehousesWithCurQty();
 
-
-  @Query("""
+    @Query(
+            """
     SELECT DISTINCT s.location.warehouse
     FROM Stock s
     WHERE s.item.itemId = :itemId
       AND s.qty > 0
   """)
-  List<Warehouse> findWarehousesWithStock(@Param("itemId") Long itemId);
+    List<Warehouse> findWarehousesWithStock(@Param("itemId") Long itemId);
 
-  Optional<Warehouse> findByName(String name);
-
+    Optional<Warehouse> findByName(String name);
 }
-

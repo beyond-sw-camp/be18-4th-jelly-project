@@ -3,15 +3,13 @@ package com.domino.smerp.purchase.requestorder.dto.response;
 import com.domino.smerp.purchase.itemrequestorder.ItemRequestOrder;
 import com.domino.smerp.purchase.requestorder.RequestOrder;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder
@@ -24,9 +22,9 @@ public class RequestOrderGetListResponse {
 
     private String empNo; // 사번
 
-    private final String companyName;  // 거래처 회사명
+    private final String companyName; // 거래처 회사명
 
-    private final String itemName;   // 품목명 or "XXX 외 n건"
+    private final String itemName; // 품목명 or "XXX 외 n건"
 
     private final BigDecimal totalQty; // 품목 수량 총합
 
@@ -51,9 +49,7 @@ public class RequestOrderGetListResponse {
             totalQty = items.get(0).getQty();
         } else {
             itemName = items.get(0).getItem().getName() + " 외 " + (items.size() - 1) + "건";
-            totalQty = items.stream()
-                    .map(ItemRequestOrder::getQty)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            totalQty = items.stream().map(ItemRequestOrder::getQty).reduce(BigDecimal.ZERO, BigDecimal::add);
         }
 
         return RequestOrderGetListResponse.builder()

@@ -34,62 +34,58 @@ import lombok.ToString;
 @ToString(exclude = {"user", "itemOrder"})
 public class ProductionPlan extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "pp_id")
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pp_id")
+    private Long id;
 
-  @Column(nullable = false)
-  @Enumerated(EnumType.STRING)
-  @Builder.Default
-  private Status status = Status.PENDING;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Status status = Status.PENDING;
 
-  private String remark;
+    private String remark;
 
-  private String title;
+    private String title;
 
-  @Column(name = "is_deleted", nullable = false)
-  @Builder.Default
-  private boolean isDeleted = false;
+    @Column(name = "is_deleted", nullable = false)
+    @Builder.Default
+    private boolean isDeleted = false;
 
-  @Column(name = "document_no", nullable = false)
-  private String documentNo;
+    @Column(name = "document_no", nullable = false)
+    private String documentNo;
 
-  @Column(precision = 12, scale = 3)
-  @Builder.Default
-  private BigDecimal qty = BigDecimal.ZERO;
+    @Column(precision = 12, scale = 3)
+    @Builder.Default
+    private BigDecimal qty = BigDecimal.ZERO;
 
-  //user
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(
-      name = "user_id",
-      foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
-  )
-  private User user;
+    // user
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private User user;
 
-  //주문 품목(교차테이블)
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "item_order_id",
-    foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
-  )
-  private ItemOrder itemOrder;
+    // 주문 품목(교차테이블)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_order_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private ItemOrder itemOrder;
 
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 
-  public void setIsDeleted(boolean isDeleted) {
-    this.isDeleted = isDeleted;
-  }
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
-  public void setStatus(Status status){
-    this.status = status;
-  }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-  public void setUser(User user){
-    this.user = user;
-  }
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 
-  public void setRemark(String remark){
-    this.remark = remark;
-  }
-
-  public void setQty(BigDecimal qty){ this.qty = qty; }
+    public void setQty(BigDecimal qty) {
+        this.qty = qty;
+    }
 }

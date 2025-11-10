@@ -14,29 +14,26 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CurrentWorkOrderResponse {
 
-  private final Long id;
+    private final Long id;
 
-  //일자 no
-  @NotNull
-  private final String documentNo;
+    // 일자 no
+    @NotNull private final String documentNo;
 
-  //거래처명
-  private final String companyName;
+    // 거래처명
+    private final String companyName;
 
-  //생산 담당자
-  private final String userName;
+    // 생산 담당자
+    private final String userName;
 
-  //계획된 작업일
-  private final Instant planAt;
+    // 계획된 작업일
+    private final Instant planAt;
 
-  //상태
-  @NotNull
-  private final Status status;
+    // 상태
+    @NotNull private final Status status;
 
-  //품목명
-  private final String itemName;
+    // 품목명
+    private final String itemName;
 
-  //계획수량
-  @NotNull
-  private final BigDecimal planQty;
+    // 계획수량
+    @NotNull private final BigDecimal planQty;
 }

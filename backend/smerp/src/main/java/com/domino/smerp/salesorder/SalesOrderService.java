@@ -6,9 +6,8 @@ import com.domino.smerp.salesorder.dto.request.SearchSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.request.SearchSummarySalesOrderRequest;
 import com.domino.smerp.salesorder.dto.request.UpdateSalesOrderRequest;
 import com.domino.smerp.salesorder.dto.response.*;
-import org.springframework.data.domain.Pageable;
-
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface SalesOrderService {
     CreateSalesOrderResponse createSalesOrder(CreateSalesOrderRequest request);

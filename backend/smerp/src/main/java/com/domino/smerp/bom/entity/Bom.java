@@ -4,11 +4,9 @@ import com.domino.smerp.bom.dto.request.CreateBomRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRelationRequest;
 import com.domino.smerp.bom.dto.request.UpdateBomRequest;
 import com.domino.smerp.item.Item;
-import com.domino.smerp.log.audit.AuditLogEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -24,68 +22,63 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.envers.Audited;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Table(name = "bom", indexes = {
-    @Index(name = "idx_bom_parent_item", columnList = "parent_item_id"),
-    @Index(name = "idx_bom_child_item", columnList = "child_item_id")})
+@Table(
+        name = "bom",
+        indexes = {
+            @Index(name = "idx_bom_parent_item", columnList = "parent_item_id"),
+            @Index(name = "idx_bom_child_item", columnList = "child_item_id")
+        })
 public class Bom {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "bom_id")
-  private Long bomId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "bom_id")
+    private Long bomId;
 
-  // 부모 품목
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "parent_item_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-  private Item parentItem;
+    // 부모 품목
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_item_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Item parentItem;
 
-  // 자식 품목
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "child_item_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-  private Item childItem;
+    // 자식 품목
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "child_item_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Item childItem;
 
-  @Column(name = "qty", nullable = false, precision = 12, scale = 3)
-  private BigDecimal qty;
+    @Column(name = "qty", nullable = false, precision = 12, scale = 3)
+    private BigDecimal qty;
 
-  @Column(name = "remark", columnDefinition = "TEXT")
-  private String remark;
+    @Column(name = "remark", columnDefinition = "TEXT")
+    private String remark;
 
-
-  public static Bom create(final CreateBomRequest request, final Item parentItem,
-      final Item childItem) {
-    return Bom.builder()
-        .parentItem(parentItem)
-        .childItem(childItem)
-        .qty(request.getQty())
-        .remark(request.getRemark())
-        .build();
-  }
-
-
-  public void update(final UpdateBomRequest request) {
-    if (request.getQty() != null) {
-      this.qty = request.getQty();
+    public static Bom create(final CreateBomRequest request, final Item parentItem, final Item childItem) {
+        return Bom.builder()
+                .parentItem(parentItem)
+                .childItem(childItem)
+                .qty(request.getQty())
+                .remark(request.getRemark())
+                .build();
     }
-    if (request.getRemark() != null) {
-      this.remark = request.getRemark();
-    }
-  }
 
-  // update 메서드가 새로운 부모 품목 ID를 받아 관계를 수정하는 경우
-  public void updateRelation(final UpdateBomRelationRequest request, final Item newParentItem) {
-    if (newParentItem != null) {
-      this.parentItem = newParentItem;
+    public void update(final UpdateBomRequest request) {
+        if (request.getQty() != null) {
+            this.qty = request.getQty();
+        }
+        if (request.getRemark() != null) {
+            this.remark = request.getRemark();
+        }
     }
-  }
 
+    // update 메서드가 새로운 부모 품목 ID를 받아 관계를 수정하는 경우
+    public void updateRelation(final UpdateBomRelationRequest request, final Item newParentItem) {
+        if (newParentItem != null) {
+            this.parentItem = newParentItem;
+        }
+    }
 }
-
-

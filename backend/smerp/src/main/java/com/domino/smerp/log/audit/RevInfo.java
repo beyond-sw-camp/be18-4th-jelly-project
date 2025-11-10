@@ -25,7 +25,7 @@ public class RevInfo {
     private Integer id;
 
     @RevisionTimestamp
-    private Long timestamp;      // ms epoch
+    private Long timestamp; // ms epoch
 
     // 누가 변경했는지 저장
     @Column(length = 100)

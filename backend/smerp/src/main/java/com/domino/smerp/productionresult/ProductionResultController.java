@@ -19,43 +19,43 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api/v1/production-results")
 public class ProductionResultController {
 
-  private final ProductionResultService productionResultService;
+    private final ProductionResultService productionResultService;
 
-  //목록 조회
-  @GetMapping
-  public ResponseEntity<ProductionResultListResponse> getProductionResults(){
-    return ResponseEntity.status(200).body(productionResultService.getAllProductionResults());
-  }
+    // 목록 조회
+    @GetMapping
+    public ResponseEntity<ProductionResultListResponse> getProductionResults() {
+        return ResponseEntity.status(200).body(productionResultService.getAllProductionResults());
+    }
 
-  //상세 조회
-  @GetMapping("/{production-result-id}")
-  public ResponseEntity<ProductionResultResponse> getProductionResult(
-      @PathVariable("production-result-id") Long productionResultId){
-    return ResponseEntity.status(200).body(productionResultService.getProductionResultById(productionResultId));
-  }
-//
-//  //생성
-//  @GetMapping
-//  public ResponseEntity<ProductionResultResponse> getProductionResult(
-//      @RequestBody CreateProductionResultRequest createProductionResultRequest){
-//    return ResponseEntity.status(200).body(productionResultService.createProductionResult(createProductionResultRequest));
-//  }
-//
-  //수정
-  @PatchMapping("/{production-result-id}")
-  public ResponseEntity<ProductionResultResponse> getProductionResult(
-      @PathVariable("production-result-id") Long productionResultId,
-      @RequestBody UpdateProductionResultRequest updateProductionResultRequest){
-    return ResponseEntity.ok().body(productionResultService.updateProductionResult(
-        productionResultId, updateProductionResultRequest)
-    );
-  }
+    // 상세 조회
+    @GetMapping("/{production-result-id}")
+    public ResponseEntity<ProductionResultResponse> getProductionResult(
+            @PathVariable("production-result-id") Long productionResultId) {
+        return ResponseEntity.status(200).body(productionResultService.getProductionResultById(productionResultId));
+    }
+    //
+    //  //생성
+    //  @GetMapping
+    //  public ResponseEntity<ProductionResultResponse> getProductionResult(
+    //      @RequestBody CreateProductionResultRequest createProductionResultRequest){
+    //    return
+    // ResponseEntity.status(200).body(productionResultService.createProductionResult(createProductionResultRequest));
+    //  }
+    //
+    // 수정
+    @PatchMapping("/{production-result-id}")
+    public ResponseEntity<ProductionResultResponse> getProductionResult(
+            @PathVariable("production-result-id") Long productionResultId,
+            @RequestBody UpdateProductionResultRequest updateProductionResultRequest) {
+        return ResponseEntity.ok()
+                .body(productionResultService.updateProductionResult(
+                        productionResultId, updateProductionResultRequest));
+    }
 
-  //soft delete
-  @DeleteMapping("/{production-result-id}")
-  public ResponseEntity deleteProductionResult(@PathVariable("production-result-id") Long productionResultId){
-    productionResultService.softDeleteProductionResult(productionResultId);
-    return ResponseEntity.status(204).build();
-  }
-
+    // soft delete
+    @DeleteMapping("/{production-result-id}")
+    public ResponseEntity deleteProductionResult(@PathVariable("production-result-id") Long productionResultId) {
+        productionResultService.softDeleteProductionResult(productionResultId);
+        return ResponseEntity.status(204).build();
+    }
 }

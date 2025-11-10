@@ -28,94 +28,95 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImpl_CreateUserTest {
 
-  @Mock
-  private UserRepository userRepository;
-  @Mock
-  private ClientRepository clientRepository;
-  @Mock
-  private PasswordEncoder passwordEncoder;
-  @Mock
-  private SsnEncryptor ssnEncryptor;
+    @Mock
+    private UserRepository userRepository;
 
-  @InjectMocks
-  private UserServiceImpl userService;
+    @Mock
+    private ClientRepository clientRepository;
 
-  @Test
-  @DisplayName("회원 생성 성공 - 중복 없음 + 거래처 존재")
-  void createUser_success() {
-    // given
-    CreateUserRequest request = CreateUserRequest.builder()
-        .name("홍길동")
-        .email("hong@test.com")
-        .phone("010-1234-5678")
-        .address("서울시 강남구")
-        .ssn("123456-1234567")
-        .loginId("hong")
-        .password("pass123")
-        .hireDate(LocalDate.of(2024, 1, 1))
-        .deptTitle("인사팀")
-        .role(UserRole.USER)
-        .companyName("한화캠프")
-        .build();
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
-    Client mockClient = mock(Client.class);
+    @Mock
+    private SsnEncryptor ssnEncryptor;
 
-    when(ssnEncryptor.encryptSsn(anyString())).thenReturn("encryptedSsn");
-    when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-    when(clientRepository.findByCompanyName(anyString()))
-        .thenReturn(Optional.of(mockClient));
-    when(userRepository.existsByEmail(anyString())).thenReturn(false);
-    when(userRepository.existsByPhone(anyString())).thenReturn(false);
-    when(userRepository.existsByLoginId(anyString())).thenReturn(false);
-    when(userRepository.existsBySsn(anyString())).thenReturn(false);
-    when(userRepository.findLastEmpNoByYearMonth(anyString())).thenReturn(null);
+    @InjectMocks
+    private UserServiceImpl userService;
 
-    // when
-    userService.createUser(request);
+    @Test
+    @DisplayName("회원 생성 성공 - 중복 없음 + 거래처 존재")
+    void createUser_success() {
+        // given
+        CreateUserRequest request = CreateUserRequest.builder()
+                .name("홍길동")
+                .email("hong@test.com")
+                .phone("010-1234-5678")
+                .address("서울시 강남구")
+                .ssn("123456-1234567")
+                .loginId("hong")
+                .password("pass123")
+                .hireDate(LocalDate.of(2024, 1, 1))
+                .deptTitle("인사팀")
+                .role(UserRole.USER)
+                .companyName("한화캠프")
+                .build();
 
-    // then
-    verify(userRepository, times(1)).save(any(User.class));
-  }
+        Client mockClient = mock(Client.class);
 
-  @Test
-  @DisplayName("회원 생성 실패 - 이메일 중복")
-  void createUser_fail_duplicateEmail() {
-    // given
-    CreateUserRequest request = CreateUserRequest.builder()
-        .email("dup@test.com")
-        .build();
+        when(ssnEncryptor.encryptSsn(anyString())).thenReturn("encryptedSsn");
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(clientRepository.findByCompanyName(anyString())).thenReturn(Optional.of(mockClient));
+        when(userRepository.existsByEmail(anyString())).thenReturn(false);
+        when(userRepository.existsByPhone(anyString())).thenReturn(false);
+        when(userRepository.existsByLoginId(anyString())).thenReturn(false);
+        when(userRepository.existsBySsn(anyString())).thenReturn(false);
+        when(userRepository.findLastEmpNoByYearMonth(anyString())).thenReturn(null);
 
-    when(userRepository.existsByEmail(anyString())).thenReturn(true);
+        // when
+        userService.createUser(request);
 
-    // when & then
-    assertThatThrownBy(() -> userService.createUser(request))
-        .isInstanceOf(CustomException.class)
-        .hasMessageContaining(ErrorCode.DUPLICATE_EMAIL.getMessage());
-  }
+        // then
+        verify(userRepository, times(1)).save(any(User.class));
+    }
 
-  @Test
-  @DisplayName("회원 생성 실패 - 거래처 없음")
-  void createUser_fail_clientNotFound() {
-    // given
-    CreateUserRequest request = CreateUserRequest.builder()
-        .email("test@test.com")
-        .loginId("user1")
-        .phone("010-0000-0000")
-        .ssn("123456-1234567")
-        .companyName("없는회사")
-        .hireDate(LocalDate.of(2025, 1, 1))
-        .build();
+    @Test
+    @DisplayName("회원 생성 실패 - 이메일 중복")
+    void createUser_fail_duplicateEmail() {
+        // given
+        CreateUserRequest request =
+                CreateUserRequest.builder().email("dup@test.com").build();
 
-    when(userRepository.existsByEmail(anyString())).thenReturn(false);
-    when(userRepository.existsByPhone(anyString())).thenReturn(false);
-    when(userRepository.existsByLoginId(anyString())).thenReturn(false);
-    when(ssnEncryptor.encryptSsn(anyString())).thenReturn("encrypted");
-    when(userRepository.existsBySsn(anyString())).thenReturn(false);
-    when(clientRepository.findByCompanyName(anyString())).thenReturn(Optional.empty());
+        when(userRepository.existsByEmail(anyString())).thenReturn(true);
 
-    // when & then
-    assertThatThrownBy(() -> userService.createUser(request))
-        .isInstanceOf(CustomException.class)
-        .hasMessageContaining(ErrorCode.CLIENT_NOT_FOUND.getMessage());
-  }
+        // when & then
+        assertThatThrownBy(() -> userService.createUser(request))
+                .isInstanceOf(CustomException.class)
+                .hasMessageContaining(ErrorCode.DUPLICATE_EMAIL.getMessage());
+    }
+
+    @Test
+    @DisplayName("회원 생성 실패 - 거래처 없음")
+    void createUser_fail_clientNotFound() {
+        // given
+        CreateUserRequest request = CreateUserRequest.builder()
+                .email("test@test.com")
+                .loginId("user1")
+                .phone("010-0000-0000")
+                .ssn("123456-1234567")
+                .companyName("없는회사")
+                .hireDate(LocalDate.of(2025, 1, 1))
+                .build();
+
+        when(userRepository.existsByEmail(anyString())).thenReturn(false);
+        when(userRepository.existsByPhone(anyString())).thenReturn(false);
+        when(userRepository.existsByLoginId(anyString())).thenReturn(false);
+        when(ssnEncryptor.encryptSsn(anyString())).thenReturn("encrypted");
+        when(userRepository.existsBySsn(anyString())).thenReturn(false);
+        when(clientRepository.findByCompanyName(anyString())).thenReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> userService.createUser(request))
+                .isInstanceOf(CustomException.class)
+                .hasMessageContaining(ErrorCode.CLIENT_NOT_FOUND.getMessage());
+    }
 }

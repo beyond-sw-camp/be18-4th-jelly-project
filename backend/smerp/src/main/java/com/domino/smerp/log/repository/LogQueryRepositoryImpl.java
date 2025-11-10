@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 public class LogQueryRepositoryImpl implements LogQueryRepository {
     private final JPAQueryFactory queryFactory;
 
-
     @Override
     public Page<LogListResponse> searchLogs(final SearchLogRequest keyword, final Pageable pageable) {
         return null;

@@ -31,79 +31,77 @@ import lombok.NoArgsConstructor;
 @Table(name = "warehouse")
 public class Warehouse extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "warehouse_id")
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "warehouse_id")
+    private Long id;
 
-  @Column(nullable = false)
-  private String name;
+    @Column(nullable = false)
+    private String name;
 
-  @Column(name = "division_type", nullable = false)
-  @Enumerated(EnumType.STRING)
-  private DivisionType divisionType;
+    @Column(name = "division_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private DivisionType divisionType;
 
-  @Column(nullable = false)
-  private boolean active;
+    @Column(nullable = false)
+    private boolean active;
 
-  @Column(nullable = false)
-  private String address;
+    @Column(nullable = false)
+    private String address;
 
-  @Column(nullable = false)
-  private String zipcode;
+    @Column(nullable = false)
+    private String zipcode;
 
-  @Column(name = "daily_capacity") //nullable o -> 공장용
-  @Builder.Default
-  private BigDecimal dailyCapacity = new BigDecimal("1600.00");
+    @Column(name = "daily_capacity") // nullable o -> 공장용
+    @Builder.Default
+    private BigDecimal dailyCapacity = new BigDecimal("1600.00");
 
-  @OneToMany(mappedBy = "warehouse")
-  @Builder.Default
-  private List<Location> locations = new ArrayList<>();
+    @OneToMany(mappedBy = "warehouse")
+    @Builder.Default
+    private List<Location> locations = new ArrayList<>();
 
-  //Boolean - null, false, true
-  public void update(UpdateWarehouseRequest warehouseRequest) {
+    // Boolean - null, false, true
+    public void update(UpdateWarehouseRequest warehouseRequest) {
 
-    if (warehouseRequest.getName() != null) {
-      this.name = warehouseRequest.getName();
+        if (warehouseRequest.getName() != null) {
+            this.name = warehouseRequest.getName();
+        }
+
+        if (warehouseRequest.getDivisionType() != null) {
+            this.divisionType = warehouseRequest.getDivisionType();
+        }
+
+        if (warehouseRequest.getActive() != null) { // null 시 기존대로 유지
+            this.active = warehouseRequest.getActive();
+        }
+
+        if (warehouseRequest.getAddress() != null) {
+            this.address = warehouseRequest.getAddress();
+        }
+
+        if (warehouseRequest.getZipcode() != null) {
+            this.zipcode = warehouseRequest.getZipcode();
+        }
     }
 
-    if (warehouseRequest.getDivisionType() != null) {
-      this.divisionType = warehouseRequest.getDivisionType();
+    public static Warehouse create(CreateWarehouseRequest warehouseRequest) {
+
+        return Warehouse.builder()
+                .name(warehouseRequest.getName())
+                .active(true)
+                .address(warehouseRequest.getAddress())
+                .zipcode(warehouseRequest.getZipcode())
+                .divisionType(warehouseRequest.getDivisionType())
+                .build();
     }
 
-    if (warehouseRequest.getActive() != null) { //null 시 기존대로 유지
-      this.active = warehouseRequest.getActive();
+    public void addLocation(Location location) {
+        locations.add(location); // warehouse
+        location.setWarehouse(this); // location
     }
 
-    if (warehouseRequest.getAddress() != null) {
-      this.address = warehouseRequest.getAddress();
+    public void removeLocation(Location location) {
+        locations.remove(location);
+        location.setWarehouse(null);
     }
-
-    if (warehouseRequest.getZipcode() != null) {
-      this.zipcode = warehouseRequest.getZipcode();
-    }
-
-  }
-
-  public static Warehouse create(CreateWarehouseRequest warehouseRequest) {
-
-    return Warehouse.builder()
-        .name(warehouseRequest.getName())
-        .active(true)
-        .address(warehouseRequest.getAddress())
-        .zipcode(warehouseRequest.getZipcode())
-        .divisionType(warehouseRequest.getDivisionType())
-        .build();
-  }
-
-
-  public void addLocation(Location location){
-    locations.add(location); //warehouse
-    location.setWarehouse(this); //location
-  }
-
-  public void removeLocation(Location location){
-    locations.remove(location);
-    location.setWarehouse(null);
-  }
 }

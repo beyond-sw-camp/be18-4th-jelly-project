@@ -39,79 +39,69 @@ import lombok.ToString;
 @ToString
 public class WorkOrder extends BaseEntity {
 
-  @Id
-  @Column(name = "wo_id")
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @Column(name = "wo_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  //창고
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "warehouse_id",
-      foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
-  )
-  private Warehouse warehouse;
+    // 창고
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouse_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Warehouse warehouse;
 
-  //품목 - 같은 품목에 대해 여러 작업지시 가능
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "item_id",
-    foreignKey =  @ForeignKey(ConstraintMode.NO_CONSTRAINT)
-  )
-  private Item item;
+    // 품목 - 같은 품목에 대해 여러 작업지시 가능
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Item item;
 
-  //생산계획
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "pp_id",
-    nullable = false,
-    foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
-  )
-  private ProductionPlan productionPlan;
+    // 생산계획
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pp_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private ProductionPlan productionPlan;
 
+    // 생산실적
+    @OneToOne(mappedBy = "workOrder", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private ProductionResult productionResult;
 
-  //생산실적
-  @OneToOne(mappedBy = "workOrder", cascade = CascadeType.REMOVE, orphanRemoval = true)
-  private ProductionResult productionResult;
+    @Column(nullable = false)
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.APPROVED;
 
+    // 지시 qty
+    @Builder.Default
+    @Column(precision = 12, scale = 3)
+    private BigDecimal qty = BigDecimal.ZERO;
 
-  @Column(nullable = false)
-  @Builder.Default
-  @Enumerated(EnumType.STRING)
-  private Status status = Status.APPROVED;
+    @Column(name = "plan_at") // 자동 생성 시
+    private Instant planAt;
 
-  //지시 qty
-  @Builder.Default
-  @Column(precision = 12,  scale = 3)
-  private BigDecimal qty = BigDecimal.ZERO;
+    @Column(name = "produced_at")
+    private Instant producedAt;
 
-  @Column(name = "plan_at") //자동 생성 시
-  private Instant planAt;
+    @Builder.Default
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 
-  @Column(name = "produced_at")
-  private Instant producedAt;
+    @Column(name = "document_no")
+    private String documentNo;
 
-  @Builder.Default
-  @Column(name = "is_deleted", nullable = false)
-  private boolean isDeleted = false;
-
-  @Column(name = "document_no")
-  private String documentNo;
-
-  public void setProducedAt(Instant producedAt) {
-    this.producedAt = producedAt;
-  }
-
-  public void setIsDeleted(boolean isDeleted) {
-    this.isDeleted = isDeleted;
-  }
-
-  public void setStatus(Status status) {
-    this.status = status;
-  }
-
-  public void setProductionResult(ProductionResult productionResult) {
-    this.productionResult = productionResult;
-    if (productionResult != null) {
-      productionResult.setWorkOrder(this);
+    public void setProducedAt(Instant producedAt) {
+        this.producedAt = producedAt;
     }
-  }
 
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setProductionResult(ProductionResult productionResult) {
+        this.productionResult = productionResult;
+        if (productionResult != null) {
+            productionResult.setWorkOrder(this);
+        }
+    }
 }

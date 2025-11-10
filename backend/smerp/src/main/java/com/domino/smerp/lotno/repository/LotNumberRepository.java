@@ -7,13 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LotNumberRepository extends JpaRepository<LotNumber, Long>,
-    LotNumberQueryRepository, LotNumberCommandRepository {
+public interface LotNumberRepository
+        extends JpaRepository<LotNumber, Long>, LotNumberQueryRepository, LotNumberCommandRepository {
 
-  boolean existsByLotId(final Long lotId);
+    boolean existsByLotId(final Long lotId);
 
-  boolean existsByName(final String name);
+    boolean existsByName(final String name);
 
-  long countByNameStartingWith(final String lotNumberPrefix);
-
+    long countByNameStartingWith(final String lotNumberPrefix);
 }

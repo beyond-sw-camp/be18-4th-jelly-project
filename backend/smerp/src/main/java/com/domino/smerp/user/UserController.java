@@ -37,11 +37,12 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<UserListResponse> searchUsers(@RequestParam(required = false) String name,
-        @RequestParam(required = false) String deptTitle,@PageableDefault(size = 20, sort = "userId", direction = Sort.Direction.DESC)
-        Pageable pageable) {
+    public PageResponse<UserListResponse> searchUsers(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String deptTitle,
+            @PageableDefault(size = 20, sort = "userId", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        return userService.searchUsers(name, deptTitle,pageable);
+        return userService.searchUsers(name, deptTitle, pageable);
     }
 
     @GetMapping("/{enpNo}")
@@ -59,8 +60,7 @@ public class UserController {
 
     @PatchMapping("/{enpNo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateUser(@PathVariable final String enpNo,
-        @Valid @RequestBody final UpdateUserRequest request) {
+    public void updateUser(@PathVariable final String enpNo, @Valid @RequestBody final UpdateUserRequest request) {
 
         userService.updateUser(enpNo, request);
     }

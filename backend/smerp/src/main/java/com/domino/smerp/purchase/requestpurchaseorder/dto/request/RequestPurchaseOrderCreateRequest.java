@@ -4,22 +4,19 @@ import com.domino.smerp.purchase.itemrequestpurchaseorder.dto.request.ItemReques
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Builder
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class RequestPurchaseOrderCreateRequest {
-    @NotNull(message = "작성자 ID는 필수 입력입니다.")
-    private String empNo; // 작성자 FK
+    @NotNull(message = "작성자 ID는 필수 입력입니다.") private String empNo; // 작성자 FK
 
-    @NotNull(message = "납기일자는 필수 입력입니다.")
-    private LocalDate deliveryDate; // 납기일자
+    @NotNull(message = "납기일자는 필수 입력입니다.") private LocalDate deliveryDate; // 납기일자
 
     @Size(max = 100, message = "비고는 최대 100자까지 입력 가능합니다.")
     private String remark; // 비고

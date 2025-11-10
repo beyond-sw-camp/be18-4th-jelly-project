@@ -13,21 +13,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BomDetailResponse {
 
-  private Long bomId;
-  private Long parentItemId;
-  private String parentItemName;
-  private Long childItemId;
-  private String childItemName;
-  private String remark;
+    private Long bomId;
+    private Long parentItemId;
+    private String parentItemName;
+    private Long childItemId;
+    private String childItemName;
+    private String remark;
 
-  public static BomDetailResponse fromEntity(final Bom bom) {
-    return BomDetailResponse.builder()
-        .bomId(bom.getBomId())
-        .parentItemId(bom.getParentItem().getItemId())
-        .parentItemName(bom.getParentItem().getName())
-        .childItemId(bom.getChildItem().getItemId())
-        .childItemName(bom.getChildItem().getName())
-        .remark(bom.getRemark())
-        .build();
-  }
+    public static BomDetailResponse fromEntity(final Bom bom) {
+        return BomDetailResponse.builder()
+                .bomId(bom.getBomId())
+                .parentItemId(bom.getParentItem().getItemId())
+                .parentItemName(bom.getParentItem().getName())
+                .childItemId(bom.getChildItem().getItemId())
+                .childItemName(bom.getChildItem().getName())
+                .remark(bom.getRemark())
+                .build();
+    }
 }

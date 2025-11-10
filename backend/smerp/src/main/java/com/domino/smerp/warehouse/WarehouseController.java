@@ -25,66 +25,60 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class WarehouseController {
 
-  private final WarehouseService warehouseService;
-  private final LocationService locationService;
+    private final WarehouseService warehouseService;
+    private final LocationService locationService;
 
-  //창고 생성
-  @PostMapping
-  public ResponseEntity<WarehouseResponse> createWarehouse(
-      @Valid @RequestBody CreateWarehouseRequest warehouseRequest) {
-    WarehouseResponse warehouseResponse = warehouseService.createWarehouse(warehouseRequest);
-    return ResponseEntity.status(201).body(warehouseResponse);
-  }
+    // 창고 생성
+    @PostMapping
+    public ResponseEntity<WarehouseResponse> createWarehouse(
+            @Valid @RequestBody CreateWarehouseRequest warehouseRequest) {
+        WarehouseResponse warehouseResponse = warehouseService.createWarehouse(warehouseRequest);
+        return ResponseEntity.status(201).body(warehouseResponse);
+    }
 
+    // 빈 위치 있는 창고 조회
+    @GetMapping("/warehouses/unfilled")
+    public ResponseEntity<WarehouseIdListResponse> getUnFilledWarehouseIds() {
+        WarehouseIdListResponse warehouseIdListResponse = warehouseService.getAllUnFilledWarehouses();
 
-  //빈 위치 있는 창고 조회
-  @GetMapping("/warehouses/unfilled")
-  public ResponseEntity<WarehouseIdListResponse> getUnFilledWarehouseIds(){
-    WarehouseIdListResponse warehouseIdListResponse = warehouseService.getAllUnFilledWarehouses();
+        return ResponseEntity.status(200).body(warehouseIdListResponse);
+    }
 
-    return ResponseEntity.status(200).body(warehouseIdListResponse);
-  }
+    // 창고 위치 중 unfilled 조회
+    @GetMapping("/{warehouse-id}/unfilled")
+    public ResponseEntity<LocationListResponse> getUnFilledLocations(@PathVariable("warehouse-id") Long warehouseId) {
+        LocationListResponse locationListResponse = locationService.getUnFilledLocations(warehouseId);
 
-  //창고 위치 중 unfilled 조회
-  @GetMapping("/{warehouse-id}/unfilled")
-  public ResponseEntity<LocationListResponse> getUnFilledLocations(
-      @PathVariable("warehouse-id") Long warehouseId) {
-    LocationListResponse locationListResponse = locationService.getUnFilledLocations(warehouseId);
+        return ResponseEntity.status(200).body(locationListResponse);
+    }
 
-    return ResponseEntity.status(200).body(locationListResponse);
-  }
+    // 창고 목록 조회
+    @GetMapping
+    public ResponseEntity<List<WarehouseResponse>> getWarehouses() {
+        List<WarehouseResponse> warehouseResponses = warehouseService.getAllWarehouses();
+        return ResponseEntity.status(200).body(warehouseResponses);
+    }
 
+    // 창고 상세 조회
+    @GetMapping("/{warehouse-id}")
+    public ResponseEntity<WarehouseResponse> getWarehouse(@PathVariable("warehouse-id") Long warehouseId) {
+        WarehouseResponse warehouseResponse = warehouseService.getWarehouseById(warehouseId);
+        return ResponseEntity.status(200).body(warehouseResponse);
+    }
 
-  //창고 목록 조회
-  @GetMapping
-  public ResponseEntity<List<WarehouseResponse>> getWarehouses() {
-    List<WarehouseResponse> warehouseResponses = warehouseService.getAllWarehouses();
-    return ResponseEntity.status(200).body(warehouseResponses);
-  }
+    // 창고 수정
+    @PatchMapping("/{warehouse-id}")
+    public ResponseEntity<WarehouseResponse> updateWarehouse(
+            @PathVariable("warehouse-id") Long warehouseId,
+            @Valid @RequestBody UpdateWarehouseRequest warehouseRequest) {
+        WarehouseResponse warehouseResponse = warehouseService.updateWarehouse(warehouseId, warehouseRequest);
+        return ResponseEntity.status(200).body(warehouseResponse);
+    }
 
-  //창고 상세 조회
-  @GetMapping("/{warehouse-id}")
-  public ResponseEntity<WarehouseResponse> getWarehouse(
-      @PathVariable("warehouse-id") Long warehouseId) {
-    WarehouseResponse warehouseResponse = warehouseService.getWarehouseById(warehouseId);
-    return ResponseEntity.status(200).body(warehouseResponse);
-  }
-
-  //창고 수정
-  @PatchMapping("/{warehouse-id}")
-  public ResponseEntity<WarehouseResponse> updateWarehouse(
-      @PathVariable("warehouse-id") Long warehouseId,
-      @Valid @RequestBody UpdateWarehouseRequest warehouseRequest
-  ) {
-    WarehouseResponse warehouseResponse = warehouseService.updateWarehouse(warehouseId,
-        warehouseRequest);
-    return ResponseEntity.status(200).body(warehouseResponse);
-  }
-
-  //창고 삭제
-  @DeleteMapping("/{warehouse-id}")
-  public ResponseEntity deleteWarehouse(@PathVariable("warehouse-id") Long warehouseId) {
-    warehouseService.deleteWarehouse(warehouseId);
-    return ResponseEntity.status(204).build();
-  }
+    // 창고 삭제
+    @DeleteMapping("/{warehouse-id}")
+    public ResponseEntity deleteWarehouse(@PathVariable("warehouse-id") Long warehouseId) {
+        warehouseService.deleteWarehouse(warehouseId);
+        return ResponseEntity.status(204).build();
+    }
 }

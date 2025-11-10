@@ -10,15 +10,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
-  List<Location> findAllByWarehouseIdAndFilledFalse(Long warehouseId);
+    List<Location> findAllByWarehouseIdAndFilledFalse(Long warehouseId);
 
-  @Query("""
-    SELECT l 
+    @Query(
+            """
+    SELECT l
     FROM Location l
     WHERE l.warehouse.id = :warehouseId
       AND COALESCE(l.curQty, 0) < l.maxQty
     ORDER BY l.curQty ASC
   """)
-  List<Location> findAvailableLocationsWithCurQty(@Param("warehouseId") Long warehouseId,
-      @Param("qty") BigDecimal qty);
+    List<Location> findAvailableLocationsWithCurQty(
+            @Param("warehouseId") Long warehouseId, @Param("qty") BigDecimal qty);
 }

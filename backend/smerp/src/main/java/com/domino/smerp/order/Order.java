@@ -3,25 +3,22 @@ package com.domino.smerp.order;
 import com.domino.smerp.client.Client;
 import com.domino.smerp.common.BaseEntity;
 import com.domino.smerp.itemorder.ItemOrder;
-import com.domino.smerp.log.audit.AuditLogEntityListener;
 import com.domino.smerp.order.constants.OrderStatus;
 import com.domino.smerp.salesorder.SalesOrder;
 import com.domino.smerp.user.User;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.envers.Audited;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-//@ToString
-//@Audited
-//@EntityListeners(AuditLogEntityListener.class)
+// @ToString
+// @Audited
+// @EntityListeners(AuditLogEntityListener.class)
 @Table(name = "`order`")
 @Getter
 @SQLDelete(sql = "UPDATE `order` SET is_deleted = true WHERE order_id = ?")
@@ -79,15 +76,11 @@ public class Order extends BaseEntity {
 
     //  도메인 계산 메소드
     public BigDecimal getTotalAmount() {
-        return orderItems.stream()
-                .map(ItemOrder::getTotalAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return orderItems.stream().map(ItemOrder::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public ItemOrder getFirstItem() {
-        return orderItems.stream()
-                .findFirst()
-                .orElse(null);
+        return orderItems.stream().findFirst().orElse(null);
     }
 
     // 첫번째 품목명 가져오기
@@ -98,9 +91,7 @@ public class Order extends BaseEntity {
 
     // 품목 갯수 카운트
     public int getOtherItemCount() {
-        return (this.getOrderItems().size() > 1)
-                ? this.getOrderItems().size() - 1
-                : 0;
+        return (this.getOrderItems().size() > 1) ? this.getOrderItems().size() - 1 : 0;
     }
 
     // 전체 업데이트 메서드 null 확인으로 수정
@@ -109,11 +100,8 @@ public class Order extends BaseEntity {
         this.documentNo = newDocumentNo;
     }
 
-    public void updateAll(Instant deliveryDate,
-                          String remark,
-                          OrderStatus status,
-                          User newUser,
-                          List<ItemOrder> newOrderItems) {
+    public void updateAll(
+            Instant deliveryDate, String remark, OrderStatus status, User newUser, List<ItemOrder> newOrderItems) {
 
         if (deliveryDate != null) {
             this.deliveryDate = deliveryDate;

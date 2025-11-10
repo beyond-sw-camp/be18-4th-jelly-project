@@ -16,18 +16,16 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.stereotype.Repository;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
@@ -37,7 +35,8 @@ public class PurchaseOrderQueryRepositoryImpl implements PurchaseOrderQueryRepos
 
     // 구매 현황
     @Override
-    public List<SummaryPurchaseOrderResponse> searchSummaryPurchaseOrders(SearchSummaryPurchaseOrderRequest condition, Pageable pageable) {
+    public List<SummaryPurchaseOrderResponse> searchSummaryPurchaseOrders(
+            SearchSummaryPurchaseOrderRequest condition, Pageable pageable) {
         QPurchaseOrder purchaseOrder = QPurchaseOrder.purchaseOrder;
         QClient client = QClient.client;
         QItemRequestOrder itemRequestOrder = QItemRequestOrder.itemRequestOrder;
@@ -51,11 +50,12 @@ public class PurchaseOrderQueryRepositoryImpl implements PurchaseOrderQueryRepos
                         item.name,
                         itemRequestOrder.qty,
                         itemRequestOrder.inboundUnitPrice,
-                        Expressions.numberTemplate(BigDecimal.class,
-                                "ROUND({0} * {1}, 2)",   // qty * inboundUnitPrice
-                                itemRequestOrder.qty, itemRequestOrder.inboundUnitPrice),
-                        purchaseOrder.remark
-                ))
+                        Expressions.numberTemplate(
+                                BigDecimal.class,
+                                "ROUND({0} * {1}, 2)", // qty * inboundUnitPrice
+                                itemRequestOrder.qty,
+                                itemRequestOrder.inboundUnitPrice),
+                        purchaseOrder.remark))
                 .from(purchaseOrder)
                 .join(purchaseOrder.requestOrder.client, client)
                 .join(purchaseOrder.requestOrder.items, itemRequestOrder)
@@ -68,8 +68,7 @@ public class PurchaseOrderQueryRepositoryImpl implements PurchaseOrderQueryRepos
                         qtyEq(condition.getQty()),
                         inboundUnitPriceEq(condition.getInboundUnitPrice()),
                         supplyAmountEq(condition.getSupplyAmount()),
-                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate())
-                )
+                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate()))
                 .orderBy(purchaseOrder.documentNo.asc()) // 기본 정렬 (필요 시 pageable sort로 교체 가능)
                 .fetch();
     }
@@ -86,8 +85,7 @@ public class PurchaseOrderQueryRepositoryImpl implements PurchaseOrderQueryRepos
                 "empNo", purchaseOrder.requestOrder.user.empNo,
                 "warehouseName", purchaseOrder.warehouseName,
                 "createdAt", purchaseOrder.createdAt,
-                "updatedAt", purchaseOrder.updatedAt
-        );
+                "updatedAt", purchaseOrder.updatedAt);
 
         // 정렬조건
         List<OrderSpecifier<?>> orders = QuerydslUtils.getSort(pageable.getSort(), sortMapping);
@@ -99,16 +97,18 @@ public class PurchaseOrderQueryRepositoryImpl implements PurchaseOrderQueryRepos
         // 결과 리스트
         List<PurchaseOrder> results = queryFactory
                 .selectFrom(purchaseOrder)
-                .join(purchaseOrder.requestOrder).fetchJoin()
-                .join(purchaseOrder.requestOrder.client).fetchJoin()
-                .join(purchaseOrder.requestOrder.user).fetchJoin()
+                .join(purchaseOrder.requestOrder)
+                .fetchJoin()
+                .join(purchaseOrder.requestOrder.client)
+                .fetchJoin()
+                .join(purchaseOrder.requestOrder.user)
+                .fetchJoin()
                 .where(
                         poIdEq(condition.getPoId()),
                         documentNoContains(condition.getDocumentNo()),
                         companyNameContains(condition.getCompanyName()),
                         empNoEq(condition.getEmpNo()),
-                        warehouseNameContains(condition.getWarehouseName())
-                )
+                        warehouseNameContains(condition.getWarehouseName()))
                 .orderBy(orders.toArray(new OrderSpecifier[0]))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -126,8 +126,7 @@ public class PurchaseOrderQueryRepositoryImpl implements PurchaseOrderQueryRepos
                         documentNoContains(condition.getDocumentNo()),
                         companyNameContains(condition.getCompanyName()),
                         empNoEq(condition.getEmpNo()),
-                        warehouseNameContains(condition.getWarehouseName())
-                );
+                        warehouseNameContains(condition.getWarehouseName()));
 
         return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
     }
@@ -137,19 +136,27 @@ public class PurchaseOrderQueryRepositoryImpl implements PurchaseOrderQueryRepos
     }
 
     private BooleanExpression documentNoContains(String documentNo) {
-        return (documentNo == null || documentNo.isEmpty()) ? null : QPurchaseOrder.purchaseOrder.documentNo.contains(documentNo);
+        return (documentNo == null || documentNo.isEmpty())
+                ? null
+                : QPurchaseOrder.purchaseOrder.documentNo.contains(documentNo);
     }
 
     private BooleanExpression companyNameContains(String companyName) {
-        return (companyName == null || companyName.isEmpty()) ? null : QPurchaseOrder.purchaseOrder.requestOrder.client.companyName.contains(companyName);
+        return (companyName == null || companyName.isEmpty())
+                ? null
+                : QPurchaseOrder.purchaseOrder.requestOrder.client.companyName.contains(companyName);
     }
 
     private BooleanExpression empNoEq(String empNo) {
-        return (empNo == null || empNo.isEmpty()) ? null : QPurchaseOrder.purchaseOrder.requestOrder.user.empNo.eq(empNo);
+        return (empNo == null || empNo.isEmpty())
+                ? null
+                : QPurchaseOrder.purchaseOrder.requestOrder.user.empNo.eq(empNo);
     }
 
     private BooleanExpression warehouseNameContains(final String warehouseName) {
-        return (warehouseName == null || warehouseName.isEmpty()) ? null : QPurchaseOrder.purchaseOrder.warehouseName.contains(warehouseName);
+        return (warehouseName == null || warehouseName.isEmpty())
+                ? null
+                : QPurchaseOrder.purchaseOrder.warehouseName.contains(warehouseName);
     }
 
     private BooleanExpression itemNameContains(String itemName) {
@@ -161,35 +168,38 @@ public class PurchaseOrderQueryRepositoryImpl implements PurchaseOrderQueryRepos
     }
 
     private BooleanExpression qtyEq(BigDecimal qty) {
-        return (qty == null) ? null : QItemRequestOrder.itemRequestOrder.qty.eq(qty);  // ✅ 수정됨
+        return (qty == null) ? null : QItemRequestOrder.itemRequestOrder.qty.eq(qty); // ✅ 수정됨
     }
 
     private BooleanExpression inboundUnitPriceEq(BigDecimal inboundUnitPrice) {
-        return (inboundUnitPrice == null) ? null : QItemRequestOrder.itemRequestOrder.inboundUnitPrice.eq(inboundUnitPrice);  // ✅ 수정됨
+        return (inboundUnitPrice == null)
+                ? null
+                : QItemRequestOrder.itemRequestOrder.inboundUnitPrice.eq(inboundUnitPrice); // ✅ 수정됨
     }
 
     private BooleanExpression supplyAmountEq(BigDecimal supplyAmount) {
-        return (supplyAmount == null) ? null :
-                QItemRequestOrder.itemRequestOrder.qty.multiply(QItemRequestOrder.itemRequestOrder.inboundUnitPrice).eq(supplyAmount);  // ✅ 수정됨
+        return (supplyAmount == null)
+                ? null
+                : QItemRequestOrder.itemRequestOrder
+                        .qty
+                        .multiply(QItemRequestOrder.itemRequestOrder.inboundUnitPrice)
+                        .eq(supplyAmount); // ✅ 수정됨
     }
 
     private BooleanExpression documentNoBetween(LocalDate start, LocalDate end) {
         if (start != null && end != null) {
             String startStr = start.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
             String endStr = end.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            return Expressions.stringTemplate(
-                    "SUBSTRING_INDEX({0}, '-', 1)", QPurchaseOrder.purchaseOrder.documentNo
-            ).between(startStr, endStr);
+            return Expressions.stringTemplate("SUBSTRING_INDEX({0}, '-', 1)", QPurchaseOrder.purchaseOrder.documentNo)
+                    .between(startStr, endStr);
         } else if (start != null) {
             String startStr = start.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            return Expressions.stringTemplate(
-                    "SUBSTRING_INDEX({0}, '-', 1)", QPurchaseOrder.purchaseOrder.documentNo
-            ).goe(startStr);
+            return Expressions.stringTemplate("SUBSTRING_INDEX({0}, '-', 1)", QPurchaseOrder.purchaseOrder.documentNo)
+                    .goe(startStr);
         } else if (end != null) {
             String endStr = end.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            return Expressions.stringTemplate(
-                    "SUBSTRING_INDEX({0}, '-', 1)", QPurchaseOrder.purchaseOrder.documentNo
-            ).loe(endStr);
+            return Expressions.stringTemplate("SUBSTRING_INDEX({0}, '-', 1)", QPurchaseOrder.purchaseOrder.documentNo)
+                    .loe(endStr);
         }
         return null;
     }

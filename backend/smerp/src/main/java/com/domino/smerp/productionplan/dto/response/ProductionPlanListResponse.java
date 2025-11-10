@@ -11,6 +11,6 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class ProductionPlanListResponse {
-  @Builder.Default
-  private List<ProductionPlanResponse> productionPlans = new ArrayList<>();
+    @Builder.Default
+    private List<ProductionPlanResponse> productionPlans = new ArrayList<>();
 }

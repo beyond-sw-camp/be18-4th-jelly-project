@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
-    //user - 유저와 관련된 예외 정보
+    // user - 유저와 관련된 예외 정보
     INVALID_LOGIN(HttpStatus.UNAUTHORIZED, "INVALID_LOGIN", "로그인 정보가 올바르지 않습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "DUPLICATE_EMAIL", "이미 등록된 이메일입니다."),
@@ -13,7 +13,7 @@ public enum ErrorCode {
     DUPLICATE_LOGINID(HttpStatus.CONFLICT, "DUPLICATE_LOGINID", "이미 사용 중인 아이디입니다."),
     DUPLICATE_SSN(HttpStatus.CONFLICT, "DUPLICATE_SSN", "이미 등록된 주민번호입니다."),
 
-    //client - 거래처와 관련된 예외 정보
+    // client - 거래처와 관련된 예외 정보
     CLIENT_NOT_FOUND(HttpStatus.NOT_FOUND, "CLIENT_NOT_FOUND", "존재하지 않는 거래처입니다."),
     DUPLICATE_BUSINESS_NUMBER(HttpStatus.CONFLICT, "DUPLICATE_BUSINESS_NUMBER", "이미 등록된 사업자번호입니다."),
     DUPLICATE_COMPANY_NAME(HttpStatus.CONFLICT, "DUPLICATE_COMPANY_NAME", "이미 등록된 회사명입니다."),
@@ -76,23 +76,30 @@ public enum ErrorCode {
     RETURN_ITEM_NOT_IN_ORDER(HttpStatus.NOT_FOUND, "RETURN_ITEM_NOT_IN_ORDER", "반품 품목은 최소 1개 이상의 품목이 필요합니다."),
     RETURN_ITEM_NOT_FOUND_IN_ORDER(HttpStatus.BAD_REQUEST, "RETURN_ITEM_NOT_FOUND_IN_ORDER", "주문에 등록되지 않은 품목입니다."),
     RETURN_QTY_EXCEEDS_ORIGINAL(HttpStatus.BAD_REQUEST, "RETURN_QTY_EXCEEDS_ORIGINAL", "반품 수량이 원 주문 수량을 초과할 수 없습니다."),
-    RETURN_ONLY_ALLOWED_AFTER_COMPLETED(HttpStatus.BAD_REQUEST, "RETURN_ONLY_ALLOWED_AFTER_COMPLETED", "완료된 주문 건에 대해서만 반품이 가능합니다."),
-
+    RETURN_ONLY_ALLOWED_AFTER_COMPLETED(
+            HttpStatus.BAD_REQUEST, "RETURN_ONLY_ALLOWED_AFTER_COMPLETED", "완료된 주문 건에 대해서만 반품이 가능합니다."),
 
     // sales_order - 판매와 관련된 예외 정보
     INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "INVALID_ORDER_STATUS", "해당 주문은 판매 생성이 불가능한 상태입니다."),
     SALES_ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "SALES_ORDER_NOT_FOUND", "존재하지 않는 판매입니다."),
     SALES_ORDER_ALREADY_EXISTS(HttpStatus.CONFLICT, "SALES_ORDER_ALREADY_EXISTS", "이미 존재하는 판매 전표가 있습니다."),
-    SALES_ORDER_DATE_BEFORE_ORDER_DATE(HttpStatus.BAD_REQUEST, "SALES_ORDER_DATE_BEFORE_ORDER_DATE", "판매 전표일은 주문 전표일보다 빠를 수 없습니다."),
-    SALES_ORDER_ALREADY_COMPLETED(HttpStatus.BAD_REQUEST, "SALES_ORDER_ALREADY_COMPLETED", "완료된 판매 전표는 수정하거나 삭제할 수 없습니다."),
+    SALES_ORDER_DATE_BEFORE_ORDER_DATE(
+            HttpStatus.BAD_REQUEST, "SALES_ORDER_DATE_BEFORE_ORDER_DATE", "판매 전표일은 주문 전표일보다 빠를 수 없습니다."),
+    SALES_ORDER_ALREADY_COMPLETED(
+            HttpStatus.BAD_REQUEST, "SALES_ORDER_ALREADY_COMPLETED", "완료된 판매 전표는 수정하거나 삭제할 수 없습니다."),
 
     // RequestPurchaseOrder - 구매요청 관련 예외 정보
     REQUEST_PURCHASE_ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "REQUEST_PURCHASE_ORDER_NOT_FOUND", "존재하지 않는 구매요청입니다."),
-    REQUEST_PURCHASE_ORDER_ITEMS_REQUIRED(HttpStatus.BAD_REQUEST, "REQUEST_PURCHASE_ORDER_ITEMS_REQUIRED", "구매요청에는 최소 1개 이상의 품목이 필요합니다."),
-    INVALID_REQUEST_PURCHASE_ORDER_REQUEST(HttpStatus.BAD_REQUEST, "INVALID_REQUEST_PURCHASE_ORDER_REQUEST", "잘못된 구매요청 요청입니다."),
-    REQUEST_PURCHASE_ORDER_ALREADY_APPROVED(HttpStatus.BAD_REQUEST, "REQUEST_PURCHASE_ORDER_ALREADY_APPROVED", "이미 구매요청 승인이 완료되었습니다."),
-    INVALID_REQUEST_PURCHASE_ORDER_QUANTITY(HttpStatus.BAD_REQUEST, "INVALID_REQUEST_PURCHASE_ORDER_QUANTITY", "구매요청 수량은 0보다 커야 합니다."),
-    INVALID_REQUEST_PURCHASE_ORDER_SPECIAL_PRICE(HttpStatus.BAD_REQUEST, "INVALID_REQUEST_PURCHASE_ORDER_SPECIAL_PRICE", "구매요청 특별단가는 0보다 커야 합니다."),
+    REQUEST_PURCHASE_ORDER_ITEMS_REQUIRED(
+            HttpStatus.BAD_REQUEST, "REQUEST_PURCHASE_ORDER_ITEMS_REQUIRED", "구매요청에는 최소 1개 이상의 품목이 필요합니다."),
+    INVALID_REQUEST_PURCHASE_ORDER_REQUEST(
+            HttpStatus.BAD_REQUEST, "INVALID_REQUEST_PURCHASE_ORDER_REQUEST", "잘못된 구매요청 요청입니다."),
+    REQUEST_PURCHASE_ORDER_ALREADY_APPROVED(
+            HttpStatus.BAD_REQUEST, "REQUEST_PURCHASE_ORDER_ALREADY_APPROVED", "이미 구매요청 승인이 완료되었습니다."),
+    INVALID_REQUEST_PURCHASE_ORDER_QUANTITY(
+            HttpStatus.BAD_REQUEST, "INVALID_REQUEST_PURCHASE_ORDER_QUANTITY", "구매요청 수량은 0보다 커야 합니다."),
+    INVALID_REQUEST_PURCHASE_ORDER_SPECIAL_PRICE(
+            HttpStatus.BAD_REQUEST, "INVALID_REQUEST_PURCHASE_ORDER_SPECIAL_PRICE", "구매요청 특별단가는 0보다 커야 합니다."),
 
     // RequestOrder - 발주 관련 예외 정보
     REQUEST_ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "REQUEST_ORDER_NOT_FOUND", "존재하지 않는 발주입니다."),
@@ -100,18 +107,26 @@ public enum ErrorCode {
     INVALID_REQUEST_ORDER_REQUEST(HttpStatus.BAD_REQUEST, "INVALID_REQUEST_ORDER_REQUEST", "잘못된 발주 요청입니다."),
     REQUEST_ORDER_ALREADY_APPROVED(HttpStatus.BAD_REQUEST, "REQUEST_ORDER_ALREADY_APPROVED", "이미 발주 승인이 완료되었습니다."),
     INVALID_REQUEST_ORDER_QUANTITY(HttpStatus.BAD_REQUEST, "INVALID_REQUEST_ORDER_QUANTITY", "발주 수량은 0보다 커야 합니다."),
-    INVALID_REQUEST_ORDER_SPECIAL_PRICE(HttpStatus.BAD_REQUEST, "INVALID_REQUEST_ORDER_SPECIAL_PRICE", "발주 특별단가는 0보다 커야 합니다."),
-    RETURN_ITEM_NOT_IN_REQUEST_ORDER(HttpStatus.NOT_FOUND, "RETURN_ITEM_NOT_IN_REQUEST_ORDER", "반품 발주에는 최소 1개 이상의 품목이 필요합니다."),
-    RETURN_ITEM_NOT_FOUND_IN_REQUEST_ORDER(HttpStatus.BAD_REQUEST, "RETURN_ITEM_NOT_FOUND_IN_REQUEST_ORDER", "발주에 등록되지 않은 품목입니다."),
-    RETURN_QUANTITY_EXCEEDS_ORIGINAL_REQUEST_ORDER(HttpStatus.BAD_REQUEST, "RETURN_QUANTITY_EXCEEDS_ORIGINAL_REQUEST_ORDER", "반품 수량이 원 발주 수량을 초과할 수 없습니다."),
-    RETURN_ONLY_ALLOWED_AFTER_COMPLETED_REQUEST_ORDER(HttpStatus.BAD_REQUEST, "RETURN_ONLY_ALLOWED_AFTER_COMPLETED_REQUEST_ORDER", "완료된 발주 건에 대해서만 반품이 가능합니다."),
+    INVALID_REQUEST_ORDER_SPECIAL_PRICE(
+            HttpStatus.BAD_REQUEST, "INVALID_REQUEST_ORDER_SPECIAL_PRICE", "발주 특별단가는 0보다 커야 합니다."),
+    RETURN_ITEM_NOT_IN_REQUEST_ORDER(
+            HttpStatus.NOT_FOUND, "RETURN_ITEM_NOT_IN_REQUEST_ORDER", "반품 발주에는 최소 1개 이상의 품목이 필요합니다."),
+    RETURN_ITEM_NOT_FOUND_IN_REQUEST_ORDER(
+            HttpStatus.BAD_REQUEST, "RETURN_ITEM_NOT_FOUND_IN_REQUEST_ORDER", "발주에 등록되지 않은 품목입니다."),
+    RETURN_QUANTITY_EXCEEDS_ORIGINAL_REQUEST_ORDER(
+            HttpStatus.BAD_REQUEST, "RETURN_QUANTITY_EXCEEDS_ORIGINAL_REQUEST_ORDER", "반품 수량이 원 발주 수량을 초과할 수 없습니다."),
+    RETURN_ONLY_ALLOWED_AFTER_COMPLETED_REQUEST_ORDER(
+            HttpStatus.BAD_REQUEST, "RETURN_ONLY_ALLOWED_AFTER_COMPLETED_REQUEST_ORDER", "완료된 발주 건에 대해서만 반품이 가능합니다."),
 
     // PurchaseOrder - 구매와 관련된 예외 정보
     PURCHASE_ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "PURCHASE_ORDER_NOT_FOUND", "존재하지 않는 구매입니다."),
     PURCHASE_ORDER_ALREADY_EXISTS(HttpStatus.CONFLICT, "PURCHASE_ORDER_ALREADY_EXISTS", "이미 존재하는 구매 전표가 있습니다."),
-    PURCHASE_ORDER_DATE_BEFORE_REQUEST_ORDER_DATE(HttpStatus.BAD_REQUEST, "PURCHASE_ORDER_DATE_BEFORE_REQUEST_ORDER_DATE", "구매 전표일은 발주 전표일보다 빠를 수 없습니다."),
-    PURCHASE_ORDER_ALREADY_COMPLETED(HttpStatus.BAD_REQUEST, "PURCHASE_ORDER_ALREADY_COMPLETED", "완료된 구매 전표는 수정하거나 삭제할 수 없습니다."),
-    INVALID_REQUEST_ORDER_STATUS_FOR_PURCHASE(HttpStatus.BAD_REQUEST, "INVALID_REQUEST_ORDER_STATUS_FOR_PURCHASE", "해당 발주는 구매 생성이 불가능한 상태입니다."),
+    PURCHASE_ORDER_DATE_BEFORE_REQUEST_ORDER_DATE(
+            HttpStatus.BAD_REQUEST, "PURCHASE_ORDER_DATE_BEFORE_REQUEST_ORDER_DATE", "구매 전표일은 발주 전표일보다 빠를 수 없습니다."),
+    PURCHASE_ORDER_ALREADY_COMPLETED(
+            HttpStatus.BAD_REQUEST, "PURCHASE_ORDER_ALREADY_COMPLETED", "완료된 구매 전표는 수정하거나 삭제할 수 없습니다."),
+    INVALID_REQUEST_ORDER_STATUS_FOR_PURCHASE(
+            HttpStatus.BAD_REQUEST, "INVALID_REQUEST_ORDER_STATUS_FOR_PURCHASE", "해당 발주는 구매 생성이 불가능한 상태입니다."),
 
     // ProductionPlan
     PRODUCTION_PLAN_DUPLICATE_TITLE(HttpStatus.CONFLICT, "PROCUTION_PLAN_DUPLICATE_TITLE", "생산 계획 제목 중복입니다."),
@@ -123,12 +138,11 @@ public enum ErrorCode {
     // 전표 생성 예외 정보
     DOCUMENT_NO_GENERATION_FAILED(HttpStatus.CONFLICT, "DOCUMENT_NO_GENERATION_FAILED", "전표번호 생성에 실패했습니다."),
 
-    //WAREHOUSE
+    // WAREHOUSE
     WAREHOUSE_NOT_FOUND(HttpStatus.NOT_FOUND, "WAREHOUSE_NOT_FOUND", "없는 창고입니다."),
     WAREHOUSE_DUPLICATE_NAME(HttpStatus.CONFLICT, "WAREHOUSE_DUPLICATE_NAME", "창고 이름 중복됩니다."),
     NO_WAREHOUSE_EMPTY(HttpStatus.BAD_REQUEST, "NO_WAREHOUSE_EMPTY", "재고를 넣을 창고 공간이 없습니다."),
     LOCATION_NOT_ENOUGH(HttpStatus.BAD_REQUEST, "LOCATION_NOT_ENOUGH", "재고를 넣을 창고 공간이 부족합니다.");
-
 
     private final HttpStatus status;
     private final String code;

@@ -1,5 +1,8 @@
 package com.domino.smerp.salesorder.repository;
 
+import static com.domino.smerp.item.QItem.item;
+import static com.domino.smerp.itemorder.QItemOrder.itemOrder;
+
 import com.domino.smerp.client.QClient;
 import com.domino.smerp.item.QItem;
 import com.domino.smerp.itemorder.QItemOrder;
@@ -15,19 +18,15 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import static com.domino.smerp.item.QItem.item;
-import static com.domino.smerp.itemorder.QItemOrder.itemOrder;
 
 @Repository
 @RequiredArgsConstructor
@@ -44,24 +43,28 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
 
         // DISTINCT 추가 → 중복 row 제거
         List<SalesOrder> results = queryFactory
-                .selectFrom(so).distinct()
-                .join(so.order, order).fetchJoin()
-                .join(order.client, client).fetchJoin()
-                .join(order.user, user).fetchJoin()
-                .leftJoin(order.orderItems, itemOrder).fetchJoin()
-                .leftJoin(itemOrder.item, item).fetchJoin()
+                .selectFrom(so)
+                .distinct()
+                .join(so.order, order)
+                .fetchJoin()
+                .join(order.client, client)
+                .fetchJoin()
+                .join(order.user, user)
+                .fetchJoin()
+                .leftJoin(order.orderItems, itemOrder)
+                .fetchJoin()
+                .leftJoin(itemOrder.item, item)
+                .fetchJoin()
                 .where(
                         companyNameContains(condition.getCompanyName(), client),
                         userNameContains(condition.getUserName(), user),
                         documentNoContains(condition.getDocumentNo(), so),
                         remarkContains(condition.getRemark(), so),
                         warehouseNameContains(condition.getWarehouseName(), so),
-                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate(), so)
-                )
+                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate(), so))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
 
         // 카운트 쿼리 (distinct 불필요)
         JPAQuery<Long> countQuery = queryFactory
@@ -76,14 +79,14 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
                         documentNoContains(condition.getDocumentNo(), so),
                         remarkContains(condition.getRemark(), so),
                         warehouseNameContains(condition.getWarehouseName(), so),
-                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate(), so)
-                );
+                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate(), so));
 
         return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
     }
 
     @Override
-    public List<SummarySalesOrderResponse> searchSummarySalesOrder(SearchSummarySalesOrderRequest condition, Pageable pageable) {
+    public List<SummarySalesOrderResponse> searchSummarySalesOrder(
+            SearchSummarySalesOrderRequest condition, Pageable pageable) {
         QSalesOrder so = QSalesOrder.salesOrder;
         QOrder order = QOrder.order;
         QClient client = QClient.client;
@@ -97,16 +100,13 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
                         item.name,
                         itemOrder.qty,
                         itemOrder.specialPrice,
-                        Expressions.numberTemplate(BigDecimal.class, "ROUND({0} * {1}, 2)",
-                                itemOrder.qty, itemOrder.specialPrice),
-                        Expressions.numberTemplate(BigDecimal.class,
-                                "ROUND(({0} * {1}) * 0.1, 2)",
-                                itemOrder.qty, itemOrder.specialPrice),
-                        Expressions.numberTemplate(BigDecimal.class,
-                                "ROUND(({0} * {1}) * 1.1, 2)",
-                                itemOrder.qty, itemOrder.specialPrice),
-                        client.companyName
-                ))
+                        Expressions.numberTemplate(
+                                BigDecimal.class, "ROUND({0} * {1}, 2)", itemOrder.qty, itemOrder.specialPrice),
+                        Expressions.numberTemplate(
+                                BigDecimal.class, "ROUND(({0} * {1}) * 0.1, 2)", itemOrder.qty, itemOrder.specialPrice),
+                        Expressions.numberTemplate(
+                                BigDecimal.class, "ROUND(({0} * {1}) * 1.1, 2)", itemOrder.qty, itemOrder.specialPrice),
+                        client.companyName))
                 .from(so)
                 .join(so.order, order)
                 .join(order.orderItems, itemOrder)
@@ -116,8 +116,7 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
                         companyNameContains(condition.getClientName(), client),
                         documentNoContains(condition.getDocumentNo(), so),
                         itemNameContains(condition.getItemName(), item),
-                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate(), so)
-                )
+                        documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate(), so))
                 .fetch();
     }
 
@@ -151,7 +150,7 @@ public class SalesOrderQueryRepositoryImpl implements SalesOrderQueryRepository 
             return so.documentNo.substring(0, 10).goe(startStr); // 시작일 이상
         } else if (end != null) {
             String endStr = end.format(formatter);
-            return so.documentNo.substring(0, 10).loe(endStr);   // 종료일 이하
+            return so.documentNo.substring(0, 10).loe(endStr); // 종료일 이하
         } else {
             return null;
         }

@@ -12,21 +12,21 @@ import lombok.Getter;
 @Getter
 public class StockMovementResponse {
 
-  //일자
-  private final Instant createdAt;
+    // 일자
+    private final Instant createdAt;
 
-  //거래처명
-  private final String companyName;
+    // 거래처명
+    private final String companyName;
 
-  //품목명
-  private final String itemName;
+    // 품목명
+    private final String itemName;
 
-  //입고수량
-  private final BigDecimal inboundQty;
+    // 입고수량
+    private final BigDecimal inboundQty;
 
-  //출고수량
-  private final BigDecimal outboundQty;
+    // 출고수량
+    private final BigDecimal outboundQty;
 
-  //출고수량
-  private final BigDecimal totalQty;
+    // 출고수량
+    private final BigDecimal totalQty;
 }

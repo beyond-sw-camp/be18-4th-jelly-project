@@ -9,8 +9,8 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class SearchWorkOrderRequest {
-  private final String itemName;
-  private final Status status;
-  private final String userName;
-  private final Long productionPlanId;
+    private final String itemName;
+    private final Status status;
+    private final String userName;
+    private final Long productionPlanId;
 }

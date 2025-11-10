@@ -13,21 +13,19 @@ import org.springframework.data.domain.Pageable;
 
 public interface WarehouseService {
 
-  WarehouseResponse getWarehouseById(final Long id);
+    WarehouseResponse getWarehouseById(final Long id);
 
-  List<WarehouseResponse> getAllWarehouses();
+    List<WarehouseResponse> getAllWarehouses();
 
-  PageResponse<WarehouseListResponse> searchWarehouses(
-      final SearchWarehouseRequest keyword,
-      final Pageable pageable);
+    PageResponse<WarehouseListResponse> searchWarehouses(final SearchWarehouseRequest keyword, final Pageable pageable);
 
-  void deleteWarehouse(final Long id);
+    void deleteWarehouse(final Long id);
 
-  WarehouseResponse updateWarehouse(final Long id, final UpdateWarehouseRequest warehouseRequest);
+    WarehouseResponse updateWarehouse(final Long id, final UpdateWarehouseRequest warehouseRequest);
 
-  WarehouseResponse createWarehouse(final CreateWarehouseRequest warehouseRequest);
+    WarehouseResponse createWarehouse(final CreateWarehouseRequest warehouseRequest);
 
-  WarehouseIdListResponse getAllUnFilledWarehouses();
+    WarehouseIdListResponse getAllUnFilledWarehouses();
 
-  WarehouseResponse toWarehouseResponse(final Warehouse warehouse);
+    WarehouseResponse toWarehouseResponse(final Warehouse warehouse);
 }

@@ -17,15 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class AuthController {
     private final AuthService authService;
+
     @PostMapping("/login")
     public void login(@RequestBody UserLoginRequest request, HttpSession session) {
-        authService.login(request.getLoginId(),request.getPassword(),session);
+        authService.login(request.getLoginId(), request.getPassword(), session);
     }
 
     @PostMapping("/logout")
     public void logout(HttpSession session) {
         authService.logout(session);
-        log.info("Logout Success ID ${}",session.getId());
+        log.info("Logout Success ID ${}", session.getId());
     }
 
     @GetMapping("/me")
@@ -35,6 +36,6 @@ public class AuthController {
         String role = (String) session.getAttribute("role");
 
         log.info("현재 로그인: {}, 이름: {}, 권한: {}", loginId, userName, role);
-        return new UserInfoResponse(loginId,userName,role);
+        return new UserInfoResponse(loginId, userName, role);
     }
 }

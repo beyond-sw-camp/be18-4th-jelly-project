@@ -9,18 +9,17 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-
 public class WarehouseResponse {
 
-  private final Long id;
+    private final Long id;
 
-  private final String name;
+    private final String name;
 
-  private final DivisionType divisionType;
+    private final DivisionType divisionType;
 
-  private final boolean active;
+    private final boolean active;
 
-  private final String address;
+    private final String address;
 
-  private final String zipcode;
+    private final String zipcode;
 }

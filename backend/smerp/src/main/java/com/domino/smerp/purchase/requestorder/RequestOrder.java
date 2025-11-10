@@ -8,15 +8,12 @@ import com.domino.smerp.purchase.requestorder.constants.RequestOrderStatus;
 import com.domino.smerp.purchase.requestpurchaseorder.RequestPurchaseOrder;
 import com.domino.smerp.user.User;
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
-
 
 @Entity
 @Getter
@@ -44,14 +41,12 @@ public class RequestOrder extends BaseEntity {
 
     // 사용자 (User) 매핑
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false,
-            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
     // 거래처 (Client) 매핑
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", nullable = false,
-            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "client_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Client client;
 
     @Column(name = "delivery_date", nullable = false)
@@ -77,24 +72,23 @@ public class RequestOrder extends BaseEntity {
 
     // ====== 도메인 메서드 ======
     public void updateDeliveryDate(LocalDate deliveryDate) {
-    this.deliveryDate = deliveryDate;
+        this.deliveryDate = deliveryDate;
     }
 
     public void updateStatus(RequestOrderStatus status) {
-    this.status = status;
+        this.status = status;
     }
 
     public void updateRemark(String remark) {
-    this.remark = remark;
+        this.remark = remark;
     }
 
     public void delete() {
-    this.isDeleted = true;
+        this.isDeleted = true;
     }
 
     public void updateDocumentNo(final LocalDate newDate, int newSequence) {
-        this.documentNo = String.format("%s-%d",
-                newDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
-                newSequence);
+        this.documentNo =
+                String.format("%s-%d", newDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")), newSequence);
     }
 }

@@ -13,16 +13,13 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateProductionPlanRequest {
 
-  @NotNull(message = "제목 필수입니다")
-  private final String title;
+    @NotNull(message = "제목 필수입니다") private final String title;
 
-  @NotNull(message = "이름을 입력해주세요")
-  private final String name;
+    @NotNull(message = "이름을 입력해주세요") private final String name;
 
-  private final Status status;
+    private final Status status;
 
-  private final String remark;
+    private final String remark;
 
-  @NotNull
-  private final BigDecimal qty;
+    @NotNull private final BigDecimal qty;
 }

@@ -18,18 +18,17 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.stereotype.Repository;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
@@ -44,11 +43,16 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
         QUser user = QUser.user;
 
         List<Order> results = queryFactory
-                .selectFrom(order).distinct()
-                .join(order.client, client).fetchJoin()
-                .join(order.user, user).fetchJoin()
-                .leftJoin(order.orderItems, QItemOrder.itemOrder).fetchJoin()
-                .leftJoin(QItemOrder.itemOrder.item, QItem.item).fetchJoin()
+                .selectFrom(order)
+                .distinct()
+                .join(order.client, client)
+                .fetchJoin()
+                .join(order.user, user)
+                .fetchJoin()
+                .leftJoin(order.orderItems, QItemOrder.itemOrder)
+                .fetchJoin()
+                .leftJoin(QItemOrder.itemOrder.item, QItem.item)
+                .fetchJoin()
                 .where(
                         companyNameContains(condition.getCompanyName()),
                         statusEq(condition.getStatus()),
@@ -57,7 +61,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         remarkContains(condition.getRemark()),
                         documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate()),
                         isNotReturnOrder(order.documentNo) // 반품 제외
-                )
+                        )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(getOrderSpecifiers(pageable, order))
@@ -76,7 +80,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         remarkContains(condition.getRemark()),
                         documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate()),
                         isNotReturnOrder(order.documentNo) // countQuery에도 반품 제외
-                );
+                        );
 
         return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
     }
@@ -96,10 +100,12 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         item.name,
                         itemOrder.qty,
                         itemOrder.specialPrice,
-                        Expressions.numberTemplate(BigDecimal.class, "ROUND({0} * {1}, 2)",
-                                itemOrder.qty, itemOrder.specialPrice), // 소수점 2자리
-                        order.remark
-                ))
+                        Expressions.numberTemplate(
+                                BigDecimal.class,
+                                "ROUND({0} * {1}, 2)",
+                                itemOrder.qty,
+                                itemOrder.specialPrice), // 소수점 2자리
+                        order.remark))
                 .from(order)
                 .join(order.client, client)
                 .join(order.orderItems, itemOrder)
@@ -113,14 +119,14 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         specialPriceEq(condition.getSpecialPrice()),
                         supplyAmountEq(condition.getSupplyAmount()),
                         documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate()),
-                        itemOrder.qty.gt(BigDecimal.ZERO)
-                )
+                        itemOrder.qty.gt(BigDecimal.ZERO))
                 .orderBy(getOrderSpecifiers(pageable, order, client, itemOrder, item))
                 .fetch();
     }
 
     @Override
-    public List<SummaryReturnOrderResponse> searchSummaryReturnOrders(SearchSummaryReturnOrderRequest condition, Pageable pageable) {
+    public List<SummaryReturnOrderResponse> searchSummaryReturnOrders(
+            SearchSummaryReturnOrderRequest condition, Pageable pageable) {
         QOrder order = QOrder.order;
         QClient client = QClient.client;
         QItemOrder itemOrder = QItemOrder.itemOrder;
@@ -134,11 +140,12 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         item.name,
                         itemOrder.qty.abs(),
                         itemOrder.specialPrice,
-                        Expressions.numberTemplate(BigDecimal.class,
+                        Expressions.numberTemplate(
+                                BigDecimal.class,
                                 "ROUND(ABS({0} * {1}) * 1.1, 2)",
-                                itemOrder.qty, itemOrder.specialPrice), // 환불금액: 절댓값
-                        order.remark
-                ))
+                                itemOrder.qty,
+                                itemOrder.specialPrice), // 환불금액: 절댓값
+                        order.remark))
                 .from(order)
                 .join(order.client, client)
                 .join(order.orderItems, itemOrder)
@@ -153,7 +160,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         remarkContains(condition.getRemark()),
                         documentNoBetween(condition.getStartDocDate(), condition.getEndDocDate()), // ✅ 추가
                         isReturnOrder(order.documentNo) // 반품만 조회
-                )
+                        )
                 .orderBy(getOrderSpecifiers(pageable, order, client, itemOrder, item))
                 .fetch()
                 .stream()
@@ -165,8 +172,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         .specialPrice(r.getSpecialPrice())
                         .refundAmount(r.getRefundAmount().setScale(2, RoundingMode.HALF_UP)) // ✅ 여기서 강제 처리
                         .remark(r.getRemark())
-                        .build()
-                )
+                        .build())
                 .toList();
     }
 
@@ -204,12 +210,22 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
     }
 
     private BooleanExpression supplyAmountEq(BigDecimal supplyAmount) {
-        return (supplyAmount == null) ? null : QItemOrder.itemOrder.qty.multiply(QItemOrder.itemOrder.specialPrice).eq(supplyAmount);
+        return (supplyAmount == null)
+                ? null
+                : QItemOrder.itemOrder
+                        .qty
+                        .multiply(QItemOrder.itemOrder.specialPrice)
+                        .eq(supplyAmount);
     }
 
     private BooleanExpression refundAmountEq(BigDecimal refundAmount) {
-        return (refundAmount == null) ? null :
-                QItemOrder.itemOrder.qty.multiply(QItemOrder.itemOrder.specialPrice).abs().eq(refundAmount);
+        return (refundAmount == null)
+                ? null
+                : QItemOrder.itemOrder
+                        .qty
+                        .multiply(QItemOrder.itemOrder.specialPrice)
+                        .abs()
+                        .eq(refundAmount);
     }
 
     private BooleanExpression isReturnOrder(com.querydsl.core.types.dsl.StringPath documentNo) {
@@ -225,23 +241,19 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
         if (start != null && end != null) {
             String startStr = start.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
             String endStr = end.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            return Expressions.stringTemplate(
-                    "SUBSTRING_INDEX({0}, '-', 1)", QOrder.order.documentNo
-            ).between(startStr, endStr);
+            return Expressions.stringTemplate("SUBSTRING_INDEX({0}, '-', 1)", QOrder.order.documentNo)
+                    .between(startStr, endStr);
         } else if (start != null) {
             String startStr = start.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            return Expressions.stringTemplate(
-                    "SUBSTRING_INDEX({0}, '-', 1)", QOrder.order.documentNo
-            ).goe(startStr);  // start 이상
+            return Expressions.stringTemplate("SUBSTRING_INDEX({0}, '-', 1)", QOrder.order.documentNo)
+                    .goe(startStr); // start 이상
         } else if (end != null) {
             String endStr = end.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            return Expressions.stringTemplate(
-                    "SUBSTRING_INDEX({0}, '-', 1)", QOrder.order.documentNo
-            ).loe(endStr);    // end 이하
+            return Expressions.stringTemplate("SUBSTRING_INDEX({0}, '-', 1)", QOrder.order.documentNo)
+                    .loe(endStr); // end 이하
         }
         return null;
     }
-
 
     // 목록 정렬 조건 매핑
     private OrderSpecifier<?>[] getOrderSpecifiers(Pageable pageable, QOrder order) {
@@ -257,16 +269,19 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
     }
 
     // 현황 정렬 조건 매핑
-    private OrderSpecifier<?>[] getOrderSpecifiers(Pageable pageable, QOrder order, QClient client, QItemOrder itemOrder, QItem item) {
+    private OrderSpecifier<?>[] getOrderSpecifiers(
+            Pageable pageable, QOrder order, QClient client, QItemOrder itemOrder, QItem item) {
         return pageable.getSort().stream()
                 .map(sort -> switch (sort.getProperty()) {
                     case "documentNo" -> sort.isAscending() ? order.documentNo.asc() : order.documentNo.desc();
                     case "companyName" -> sort.isAscending() ? client.companyName.asc() : client.companyName.desc();
                     case "itemName" -> sort.isAscending() ? item.name.asc() : item.name.desc();
                     case "qty" -> sort.isAscending() ? itemOrder.qty.asc() : itemOrder.qty.desc();
-                    case "specialPrice" ->
-                            sort.isAscending() ? itemOrder.specialPrice.asc() : itemOrder.specialPrice.desc();
-                    case "supplyAmount" -> sort.isAscending() ? itemOrder.qty.multiply(itemOrder.specialPrice).asc()
+                    case "specialPrice" -> sort.isAscending()
+                            ? itemOrder.specialPrice.asc()
+                            : itemOrder.specialPrice.desc();
+                    case "supplyAmount" -> sort.isAscending()
+                            ? itemOrder.qty.multiply(itemOrder.specialPrice).asc()
                             : itemOrder.qty.multiply(itemOrder.specialPrice).desc();
                     case "remark" -> sort.isAscending() ? order.remark.asc() : order.remark.desc();
                     default -> null;

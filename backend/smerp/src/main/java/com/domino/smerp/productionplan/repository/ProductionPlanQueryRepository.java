@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface ProductionPlanQueryRepository {
 
- Page<ProductionPlan> searchProductionPlans(
-      final com.domino.smerp.productionplan.dto.request.SearchProductionPlanRequest keyword,
-      final Pageable pageable);
+    Page<ProductionPlan> searchProductionPlans(
+            final com.domino.smerp.productionplan.dto.request.SearchProductionPlanRequest keyword,
+            final Pageable pageable);
 }

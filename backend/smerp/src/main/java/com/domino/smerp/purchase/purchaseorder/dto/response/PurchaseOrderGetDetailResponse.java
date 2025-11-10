@@ -1,11 +1,8 @@
 package com.domino.smerp.purchase.purchaseorder.dto.response;
 
-import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.Instant;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,19 +15,19 @@ public class PurchaseOrderGetDetailResponse {
 
     private String empNo; // 사번
 
-    private final String companyName;  // 거래처 회사명
+    private final String companyName; // 거래처 회사명
 
     private final String warehouseName;
 
-//    private final BigDecimal qty;
+    //    private final BigDecimal qty;
 
-//    private final BigDecimal inboundUnitPrice;
+    //    private final BigDecimal inboundUnitPrice;
 
-//    private final BigDecimal specialPrice; // 요청 시 선택 입력
+    //    private final BigDecimal specialPrice; // 요청 시 선택 입력
 
-//    private final BigDecimal surtax;
+    //    private final BigDecimal surtax;
 
-//    private final BigDecimal price;
+    //    private final BigDecimal price;
 
     private final String remark;
 

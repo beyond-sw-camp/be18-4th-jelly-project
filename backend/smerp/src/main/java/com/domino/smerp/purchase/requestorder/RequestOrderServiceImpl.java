@@ -15,22 +15,21 @@ import com.domino.smerp.purchase.requestorder.dto.request.SearchRequestOrderRequ
 import com.domino.smerp.purchase.requestorder.dto.response.*;
 import com.domino.smerp.purchase.requestorder.repository.RequestOrderRepository;
 import com.domino.smerp.purchase.requestpurchaseorder.RequestPurchaseOrder;
-import com.domino.smerp.purchase.requestpurchaseorder.repository.RequestPurchaseOrderRepository;
 import com.domino.smerp.purchase.requestpurchaseorder.constants.RequestPurchaseOrderStatus;
+import com.domino.smerp.purchase.requestpurchaseorder.repository.RequestPurchaseOrderRepository;
 import com.domino.smerp.user.User;
 import com.domino.smerp.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +50,8 @@ public class RequestOrderServiceImpl implements RequestOrderService {
 
         // case 1: 구매요청 기반 발주
         if (request.getRpoId() != null) {
-            requestPurchaseOrder = requestPurchaseOrderRepository.findById(request.getRpoId())
+            requestPurchaseOrder = requestPurchaseOrderRepository
+                    .findById(request.getRpoId())
                     .orElseThrow(() -> new EntityNotFoundException("구매요청을 찾을 수 없습니다. id=" + request.getRpoId()));
 
             if (requestPurchaseOrder.getStatus() != RequestPurchaseOrderStatus.PENDING) {
@@ -67,24 +67,27 @@ public class RequestOrderServiceImpl implements RequestOrderService {
         if (request.getDocumentNo() != null && !request.getDocumentNo().isBlank()) {
             // 사용자가 날짜만 입력했을 경우 (yyyy/MM/dd)
             String dateString = request.getDocumentNo();
-            int lastSeq = requestOrderRepository.findLastSequenceByDate(dateString).orElse(0);
+            int lastSeq =
+                    requestOrderRepository.findLastSequenceByDate(dateString).orElse(0);
             documentNo = String.format("%s-%d", dateString, lastSeq + 1);
         } else {
             // 사용자가 입력 안 했을 경우 → 오늘 날짜 기준
             LocalDate docDate = LocalDate.now();
             String dateString = docDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            int lastSeq = requestOrderRepository.findLastSequenceByDate(dateString).orElse(0);
+            int lastSeq =
+                    requestOrderRepository.findLastSequenceByDate(dateString).orElse(0);
             documentNo = String.format("%s-%d", dateString, lastSeq + 1);
         }
 
         // 사번 기반으로 사용자 조회
-        User userEntity = userRepository.findByEmpNo(request.getEmpNo())
+        User userEntity = userRepository
+                .findByEmpNo(request.getEmpNo())
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다. empNo=" + request.getEmpNo()));
 
-// 거래처 이름 기반으로 조회
-        Client clientEntity = clientRepository.findByCompanyName(request.getCompanyName())
+        // 거래처 이름 기반으로 조회
+        Client clientEntity = clientRepository
+                .findByCompanyName(request.getCompanyName())
                 .orElseThrow(() -> new EntityNotFoundException("거래처를 찾을 수 없습니다. name=" + request.getCompanyName()));
-
 
         // 발주 엔티티 변환
         RequestOrder entity = RequestOrder.builder()
@@ -104,10 +107,12 @@ public class RequestOrderServiceImpl implements RequestOrderService {
         List<RequestOrderCreateResponse.ItemDetail> itemDetails = request.getItems().stream()
                 .map(itemDto -> {
                     // 단가 유효성 검증 추가
-                    if (itemDto.getInboundUnitPrice() == null || itemDto.getInboundUnitPrice().compareTo(BigDecimal.ZERO) <= 0) {
+                    if (itemDto.getInboundUnitPrice() == null
+                            || itemDto.getInboundUnitPrice().compareTo(BigDecimal.ZERO) <= 0) {
                         throw new IllegalArgumentException("단가가 올바르지 않습니다. itemId=" + itemDto.getItemId());
                     }
-                    Item itemEntity = itemRepository.findById(itemDto.getItemId())
+                    Item itemEntity = itemRepository
+                            .findById(itemDto.getItemId())
                             .orElseThrow(() -> new EntityNotFoundException("품목을 찾을 수 없습니다. id=" + itemDto.getItemId()));
 
                     ItemRequestOrder crossed = ItemRequestOrder.builder()
@@ -115,9 +120,10 @@ public class RequestOrderServiceImpl implements RequestOrderService {
                             .item(itemEntity)
                             .qty(itemDto.getQty())
                             .inboundUnitPrice(itemDto.getInboundUnitPrice())
-                            .specialPrice(itemDto.getSpecialPrice() != null
-                                    ? itemDto.getSpecialPrice()
-                                    : itemEntity.getInboundUnitPrice())   // ★ 특별단가 우선 적용
+                            .specialPrice(
+                                    itemDto.getSpecialPrice() != null
+                                            ? itemDto.getSpecialPrice()
+                                            : itemEntity.getInboundUnitPrice()) // ★ 특별단가 우선 적용
                             .build();
 
                     itemRequestOrderRepository.save(crossed);
@@ -128,8 +134,7 @@ public class RequestOrderServiceImpl implements RequestOrderService {
                             itemEntity.getName(),
                             itemDto.getQty(),
                             itemDto.getInboundUnitPrice(),
-                            crossed.getSpecialPrice()
-                    );
+                            crossed.getSpecialPrice());
                 })
                 .toList();
 
@@ -139,7 +144,6 @@ public class RequestOrderServiceImpl implements RequestOrderService {
                 .companyName(entity.getClient().getCompanyName())
                 .deliveryDate(saved.getDeliveryDate())
                 .documentNo(saved.getDocumentNo())
-
                 .createdAt(saved.getCreatedAt())
                 .items(itemDetails)
                 .build();
@@ -148,13 +152,12 @@ public class RequestOrderServiceImpl implements RequestOrderService {
     @Override
     @Transactional(readOnly = true)
     public PageResponse<RequestOrderGetListResponse> searchRequestOrders(
-            final SearchRequestOrderRequest keyword,
-            final Pageable pageable
-    ) {
+            final SearchRequestOrderRequest keyword, final Pageable pageable) {
         return PageResponse.from(
-                requestOrderRepository.searchRequestOrder(keyword, pageable)
-                        .map(RequestOrderGetListResponse::fromEntity)  // DTO 변환 메서드 필요
-        );
+                requestOrderRepository
+                        .searchRequestOrder(keyword, pageable)
+                        .map(RequestOrderGetListResponse::fromEntity) // DTO 변환 메서드 필요
+                );
     }
 
     // 발주 목록 조회
@@ -163,7 +166,8 @@ public class RequestOrderServiceImpl implements RequestOrderService {
     public List<RequestOrderGetListResponse> getRequestOrders(final int page, final int size) {
         PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
-        return requestOrderRepository.findAll(pageable)
+        return requestOrderRepository
+                .findAll(pageable)
                 .map(entity -> {
                     List<ItemRequestOrder> items = entity.getItems();
 
@@ -174,13 +178,12 @@ public class RequestOrderServiceImpl implements RequestOrderService {
                         itemName = null;
                         totalQty = BigDecimal.ZERO;
                     } else if (items.size() == 1) {
-                        itemName = items.get(0).getItem().getName();   // Item 엔티티에서 getName()
+                        itemName = items.get(0).getItem().getName(); // Item 엔티티에서 getName()
                         totalQty = items.get(0).getQty();
                     } else {
                         itemName = items.get(0).getItem().getName() + " 외 " + (items.size() - 1) + "건";
-                        totalQty = items.stream()
-                                .map(ItemRequestOrder::getQty)
-                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                        totalQty =
+                                items.stream().map(ItemRequestOrder::getQty).reduce(BigDecimal.ZERO, BigDecimal::add);
                     }
 
                     return RequestOrderGetListResponse.builder()
@@ -197,12 +200,12 @@ public class RequestOrderServiceImpl implements RequestOrderService {
                 .toList();
     }
 
-
     // ✅ 발주 상세 조회
     @Override
     @Transactional(readOnly = true)
     public RequestOrderGetDetailResponse getRequestOrderById(final Long roId) {
-        RequestOrder entity = requestOrderRepository.findById(roId)
+        RequestOrder entity = requestOrderRepository
+                .findById(roId)
                 .orElseThrow(() -> new EntityNotFoundException("발주 전표를 조회할 수 없습니다. id=" + roId));
 
         List<ItemRequestOrderDto> itemDtos = entity.getItems().stream()
@@ -212,8 +215,7 @@ public class RequestOrderServiceImpl implements RequestOrderService {
                         .qty(item.getQty())
                         .inboundUnitPrice(item.getInboundUnitPrice())
                         .specialPrice(item.getSpecialPrice())
-                        .build()
-                )
+                        .build())
                 .toList();
 
         return RequestOrderGetDetailResponse.builder()
@@ -232,9 +234,9 @@ public class RequestOrderServiceImpl implements RequestOrderService {
     // ✅ 발주 수정
     @Override
     @Transactional
-    public RequestOrderUpdateResponse updateRequestOrder(final Long roId,
-                                                         final RequestOrderUpdateRequest request) {
-        RequestOrder entity = requestOrderRepository.findById(roId)
+    public RequestOrderUpdateResponse updateRequestOrder(final Long roId, final RequestOrderUpdateRequest request) {
+        RequestOrder entity = requestOrderRepository
+                .findById(roId)
                 .orElseThrow(() -> new EntityNotFoundException("발주 전표를 조회할 수 없습니다. id="));
 
         // ====== 기본 필드 수정 ======
@@ -249,7 +251,8 @@ public class RequestOrderServiceImpl implements RequestOrderService {
         if (request.getNewDocDate() != null) {
             LocalDate newDate = request.getNewDocDate();
             String dateString = newDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-            int lastSeq = requestOrderRepository.findLastSequenceByDate(dateString).orElse(0);
+            int lastSeq =
+                    requestOrderRepository.findLastSequenceByDate(dateString).orElse(0);
             entity.updateDocumentNo(newDate, lastSeq + 1);
         }
 
@@ -260,11 +263,13 @@ public class RequestOrderServiceImpl implements RequestOrderService {
 
             // 새 품목 등록
             request.getItems().forEach(itemDto -> {
-                if (itemDto.getInboundUnitPrice() == null || itemDto.getInboundUnitPrice().compareTo(BigDecimal.ZERO) <= 0) {
+                if (itemDto.getInboundUnitPrice() == null
+                        || itemDto.getInboundUnitPrice().compareTo(BigDecimal.ZERO) <= 0) {
                     throw new IllegalArgumentException("단가가 올바르지 않습니다.");
                 }
 
-                Item itemEntity = itemRepository.findById(itemDto.getItemId())
+                Item itemEntity = itemRepository
+                        .findById(itemDto.getItemId())
                         .orElseThrow(() -> new EntityNotFoundException("품목을 찾을 수 없습니다. id=" + itemDto.getItemId()));
 
                 ItemRequestOrder crossed = ItemRequestOrder.builder()
@@ -272,9 +277,10 @@ public class RequestOrderServiceImpl implements RequestOrderService {
                         .item(itemEntity)
                         .qty(itemDto.getQty())
                         .inboundUnitPrice(itemDto.getInboundUnitPrice())
-                        .specialPrice(itemDto.getSpecialPrice() != null
-                                ? itemDto.getSpecialPrice()
-                                : itemEntity.getInboundUnitPrice()) // ★ 특별단가 우선 적용
+                        .specialPrice(
+                                itemDto.getSpecialPrice() != null
+                                        ? itemDto.getSpecialPrice()
+                                        : itemEntity.getInboundUnitPrice()) // ★ 특별단가 우선 적용
                         .build();
 
                 itemRequestOrderRepository.save(crossed);
@@ -289,8 +295,7 @@ public class RequestOrderServiceImpl implements RequestOrderService {
                         .qty(item.getQty())
                         .inboundUnitPrice(item.getInboundUnitPrice())
                         .specialPrice(item.getSpecialPrice())
-                        .build()
-                )
+                        .build())
                 .toList();
 
         // ====== 응답 반환 ======
@@ -310,13 +315,12 @@ public class RequestOrderServiceImpl implements RequestOrderService {
     @Override
     @Transactional
     public RequestOrderDeleteResponse deleteRequestOrder(final Long roId) {
-        RequestOrder entity = requestOrderRepository.findById(roId)
+        RequestOrder entity = requestOrderRepository
+                .findById(roId)
                 .orElseThrow(() -> new EntityNotFoundException("조회할 수 없습니다. id=" + roId));
 
         entity.delete(); // 소프트 삭제
 
-        return RequestOrderDeleteResponse.builder()
-                .message("발주 전표가 삭제되었습니다.")
-                .build();
+        return RequestOrderDeleteResponse.builder().message("발주 전표가 삭제되었습니다.").build();
     }
 }

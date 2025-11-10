@@ -1,9 +1,18 @@
 package com.domino.smerp.item;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.domino.smerp.common.dto.PageResponse;
 import com.domino.smerp.item.dto.request.SearchItemRequest;
 import com.domino.smerp.item.dto.response.ItemListResponse;
 import com.domino.smerp.item.repository.ItemRepository;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,16 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ItemServiceImpl_SearchITemsTest {
@@ -40,22 +39,18 @@ public class ItemServiceImpl_SearchITemsTest {
     void searchItems_success() {
         // Arrange
         SearchItemRequest request = SearchItemRequest.builder()
-                                                     .status("정상")
-                                                     .name("볼트")
-                                                     .specification("M8x20")
-                                                     .groupName1("철물")
-                                                     .groupName2("나사")
-                                                     .groupName3("공구")
-                                                     .build();
+                .status("정상")
+                .name("볼트")
+                .specification("M8x20")
+                .groupName1("철물")
+                .groupName2("나사")
+                .groupName3("공구")
+                .build();
 
         Pageable pageable = PageRequest.of(0, 10);
 
         // 가짜 Item 데이터 (조회 결과)
-        Item item = Item.builder()
-                        .itemId(1L)
-                        .name("볼트")
-                        .rfid("RFID-001")
-                        .build();
+        Item item = Item.builder().itemId(1L).name("볼트").rfid("RFID-001").build();
 
         Page<Item> mockPage = new PageImpl<>(List.of(item));
 
@@ -77,10 +72,8 @@ public class ItemServiceImpl_SearchITemsTest {
     @DisplayName("검색 결과가 없으면 빈 페이지를 반환한다")
     void searchItems_empty() {
         // Arrange
-        SearchItemRequest request = SearchItemRequest.builder()
-                                                     .status("정상")
-                                                     .name("없는품목")
-                                                     .build();
+        SearchItemRequest request =
+                SearchItemRequest.builder().status("정상").name("없는품목").build();
 
         Pageable pageable = PageRequest.of(0, 10);
 

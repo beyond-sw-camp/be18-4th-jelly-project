@@ -23,5 +23,4 @@ public class UserResponse {
     private final UserRole role;
     private final String companyName;
     private final String empNo;
-
 }

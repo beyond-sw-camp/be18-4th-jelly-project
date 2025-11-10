@@ -1,23 +1,5 @@
 package com.domino.smerp.item;
 
-import com.domino.smerp.common.exception.CustomException;
-import com.domino.smerp.common.exception.ErrorCode;
-import com.domino.smerp.item.constants.ItemAct;
-import com.domino.smerp.item.constants.ItemStatusStatus;
-import com.domino.smerp.item.dto.request.CreateItemRequest;
-import com.domino.smerp.item.dto.response.ItemDetailResponse;
-import com.domino.smerp.item.repository.ItemRepository;
-import com.domino.smerp.item.repository.ItemStatusRepository;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,6 +9,21 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.domino.smerp.common.exception.CustomException;
+import com.domino.smerp.common.exception.ErrorCode;
+import com.domino.smerp.item.constants.ItemStatusStatus;
+import com.domino.smerp.item.dto.request.CreateItemRequest;
+import com.domino.smerp.item.dto.response.ItemDetailResponse;
+import com.domino.smerp.item.repository.ItemRepository;
+import com.domino.smerp.item.repository.ItemStatusRepository;
+import java.math.BigDecimal;
+import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class ItemServiceImpl_CreateItemTest {
@@ -42,7 +39,7 @@ public class ItemServiceImpl_CreateItemTest {
 
     @Test
     @DisplayName("정상적인 Item 생성 시 Item이 저장되고, 리턴한다.")
-    void createItem_success(){
+    void createItem_success() {
         CreateItemRequest request = CreateItemRequest.builder()
                 .itemStatusId(1L)
                 .name("볼트")
@@ -56,13 +53,15 @@ public class ItemServiceImpl_CreateItemTest {
                 .rfid("RFID-001")
                 .groupName1("가전")
                 .groupName2("소켓")
-                .groupName3("기타").build();
+                .groupName3("기타")
+                .build();
 
-        ItemStatus itemStatus =ItemStatus.builder()
+        ItemStatus itemStatus = ItemStatus.builder()
                 .itemStatusId(1L)
-                .status(ItemStatusStatus.RAW_MATERIAL).build();
+                .status(ItemStatusStatus.RAW_MATERIAL)
+                .build();
 
-        Item savedItem = Item.create(request,itemStatus);
+        Item savedItem = Item.create(request, itemStatus);
 
         // itemStatus 선언 통과
         when(itemStatusRepository.findById(1L)).thenReturn(Optional.of(itemStatus));
@@ -105,30 +104,31 @@ public class ItemServiceImpl_CreateItemTest {
     void createItem_duplicateName() {
         // Arrange
         CreateItemRequest request = CreateItemRequest.builder()
-                                                     .itemStatusId(1L)
-                                                     .name("볼트")
-                                                     .specification("M8x20")
-                                                     .unit("EA")
-                                                     .inboundUnitPrice(BigDecimal.valueOf(100))
-                                                     .outboundUnitPrice(BigDecimal.valueOf(150))
-                                                     .itemAct("사용중")
-                                                     .safetyStock(BigDecimal.valueOf(50))
-                                                     .safetyStockAct("사용중")
-                                                     .rfid("RFID-001")
-                                                     .groupName1("가전")
-                                                     .groupName2("소켓")
-                                                     .groupName3("기타").build();
+                .itemStatusId(1L)
+                .name("볼트")
+                .specification("M8x20")
+                .unit("EA")
+                .inboundUnitPrice(BigDecimal.valueOf(100))
+                .outboundUnitPrice(BigDecimal.valueOf(150))
+                .itemAct("사용중")
+                .safetyStock(BigDecimal.valueOf(50))
+                .safetyStockAct("사용중")
+                .rfid("RFID-001")
+                .groupName1("가전")
+                .groupName2("소켓")
+                .groupName3("기타")
+                .build();
 
-        ItemStatus itemStatus =ItemStatus.builder()
-                                         .itemStatusId(1L)
-                                         .status(ItemStatusStatus.RAW_MATERIAL).build();
+        ItemStatus itemStatus = ItemStatus.builder()
+                .itemStatusId(1L)
+                .status(ItemStatusStatus.RAW_MATERIAL)
+                .build();
 
         when(itemStatusRepository.findById(1L)).thenReturn(Optional.of(itemStatus));
         when(itemRepository.existsByName("볼트")).thenReturn(true); // 이미 존재
 
         // Act
-        CustomException exception = assertThrows(CustomException.class,
-                                                 () -> itemServiceImpl.createItem(request));
+        CustomException exception = assertThrows(CustomException.class, () -> itemServiceImpl.createItem(request));
 
         // Assert
         assertEquals(ErrorCode.DUPLICATE_ITEM, exception.getErrorCode());
@@ -141,35 +141,35 @@ public class ItemServiceImpl_CreateItemTest {
 
         // Arrange
         CreateItemRequest request = CreateItemRequest.builder()
-                                                     .itemStatusId(1L)
-                                                     .name("볼트")
-                                                     .specification("M8x20")
-                                                     .unit("EA")
-                                                     .inboundUnitPrice(BigDecimal.valueOf(100))
-                                                     .outboundUnitPrice(BigDecimal.valueOf(150))
-                                                     .itemAct("사용중")
-                                                     .safetyStock(BigDecimal.valueOf(50))
-                                                     .safetyStockAct("사용중")
-                                                     .rfid("RFID-001")
-                                                     .groupName1("가전")
-                                                     .groupName2("소켓")
-                                                     .groupName3("기타").build();
+                .itemStatusId(1L)
+                .name("볼트")
+                .specification("M8x20")
+                .unit("EA")
+                .inboundUnitPrice(BigDecimal.valueOf(100))
+                .outboundUnitPrice(BigDecimal.valueOf(150))
+                .itemAct("사용중")
+                .safetyStock(BigDecimal.valueOf(50))
+                .safetyStockAct("사용중")
+                .rfid("RFID-001")
+                .groupName1("가전")
+                .groupName2("소켓")
+                .groupName3("기타")
+                .build();
 
-        ItemStatus itemStatus =ItemStatus.builder()
-                                         .itemStatusId(1L)
-                                         .status(ItemStatusStatus.RAW_MATERIAL).build();
+        ItemStatus itemStatus = ItemStatus.builder()
+                .itemStatusId(1L)
+                .status(ItemStatusStatus.RAW_MATERIAL)
+                .build();
 
         when(itemStatusRepository.findById(1L)).thenReturn(Optional.of(itemStatus));
         when(itemRepository.existsByName("볼트")).thenReturn(false);
         when(itemRepository.existsByRfid("RFID-001")).thenReturn(true); // 중복 RFID
 
         // Act
-        CustomException exception = assertThrows(CustomException.class,
-                                                 () -> itemServiceImpl.createItem(request));
+        CustomException exception = assertThrows(CustomException.class, () -> itemServiceImpl.createItem(request));
 
         // Assert
         assertEquals(ErrorCode.DUPLICATE_RFID, exception.getErrorCode());
         verify(itemRepository, never()).save(any(Item.class));
     }
-
 }

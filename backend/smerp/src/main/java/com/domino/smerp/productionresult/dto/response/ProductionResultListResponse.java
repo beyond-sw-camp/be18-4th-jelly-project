@@ -12,8 +12,8 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class ProductionResultListResponse {
-  @Builder.Default
-  private final List<ProductionResultResponse> productionResultResponses = new ArrayList<>();
+    @Builder.Default
+    private final List<ProductionResultResponse> productionResultResponses = new ArrayList<>();
 
-  private final BigDecimal totalQty;
+    private final BigDecimal totalQty;
 }

@@ -11,5 +11,5 @@ import lombok.Getter;
 @Getter
 public class StockMovementListResponse {
 
-  List<StockMovementResponse> stockMovementResponses;
+    List<StockMovementResponse> stockMovementResponses;
 }

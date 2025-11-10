@@ -13,19 +13,22 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface StockMovementService {
-  StockMovementListResponse getAllStockMovements();
+    StockMovementListResponse getAllStockMovements();
 
-  void createStockMovement(CreateStockMovementRequest createStockMovementRequest);
+    void createStockMovement(CreateStockMovementRequest createStockMovementRequest);
 
-  List<StockMovement> createInboundStockMovement(Item item, BigDecimal movedQty,
-      User user, TransactionType transactionType, String documentNo, BigDecimal totalQty);
+    List<StockMovement> createInboundStockMovement(
+            Item item,
+            BigDecimal movedQty,
+            User user,
+            TransactionType transactionType,
+            String documentNo,
+            BigDecimal totalQty);
 
-  List<StockMovement> createProduceStockMovement(WorkOrder workOrder);
+    List<StockMovement> createProduceStockMovement(WorkOrder workOrder);
 
-  //void createOutboundStockMovement(BigDecimal movedQty, Item item, User user,
-      //TransactionType transactionType, String documentNo);
+    // void createOutboundStockMovement(BigDecimal movedQty, Item item, User user,
+    // TransactionType transactionType, String documentNo);
 
-  StockMovementResponse createAdjustStockMovement(UpdateStockMovementRequest updateStockMovementRequest);
-
-
+    StockMovementResponse createAdjustStockMovement(UpdateStockMovementRequest updateStockMovementRequest);
 }

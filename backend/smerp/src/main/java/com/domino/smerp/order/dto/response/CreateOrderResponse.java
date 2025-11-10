@@ -10,13 +10,13 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class CreateOrderResponse {
-    private final String documentNo;   // 전표 번호로 변경
+    private final String documentNo; // 전표 번호로 변경
     private final OrderStatus status;
     private final String message;
 
     public static CreateOrderResponse from(Order order) {
         return CreateOrderResponse.builder()
-                .documentNo(order.getDocumentNo())   // 전표번호 세팅
+                .documentNo(order.getDocumentNo()) // 전표번호 세팅
                 .status(order.getStatus())
                 .message("주문 등록이 완료됐습니다.")
                 .build();

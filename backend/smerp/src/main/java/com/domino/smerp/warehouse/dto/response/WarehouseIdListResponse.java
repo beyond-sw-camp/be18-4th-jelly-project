@@ -12,6 +12,6 @@ import lombok.Getter;
 @Getter
 public class WarehouseIdListResponse {
 
-  @Builder.Default
-  private final List<Long> warehouseIds = new ArrayList<>();
+    @Builder.Default
+    private final List<Long> warehouseIds = new ArrayList<>();
 }

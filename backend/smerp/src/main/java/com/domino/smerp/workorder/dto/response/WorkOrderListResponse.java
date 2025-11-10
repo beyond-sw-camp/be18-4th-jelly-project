@@ -1,6 +1,5 @@
 package com.domino.smerp.workorder.dto.response;
 
-import com.domino.smerp.productionresult.dto.response.ProductionResultResponse;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -12,7 +11,6 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class WorkOrderListResponse {
-  @Builder.Default
-  private List<WorkOrderResponse> workOrderResponses = new ArrayList<>();
-
+    @Builder.Default
+    private List<WorkOrderResponse> workOrderResponses = new ArrayList<>();
 }

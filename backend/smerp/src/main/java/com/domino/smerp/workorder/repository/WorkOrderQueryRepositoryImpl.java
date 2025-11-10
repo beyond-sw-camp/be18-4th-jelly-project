@@ -22,57 +22,54 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class WorkOrderQueryRepositoryImpl implements WorkOrderQueryRepository {
 
-  private final JPAQueryFactory queryFactory;
+    private final JPAQueryFactory queryFactory;
 
-  @Override
-  public Page<WorkOrder> searchWorkOrders(SearchWorkOrderRequest request, Pageable pageable) {
-    QWorkOrder workOrder = QWorkOrder.workOrder;
+    @Override
+    public Page<WorkOrder> searchWorkOrders(SearchWorkOrderRequest request, Pageable pageable) {
+        QWorkOrder workOrder = QWorkOrder.workOrder;
 
-    BooleanBuilder builder = new BooleanBuilder();
+        BooleanBuilder builder = new BooleanBuilder();
 
-    if (StringUtils.hasText(request.getItemName())) {
-      builder.and(workOrder.item.name.eq(request.getItemName()));
+        if (StringUtils.hasText(request.getItemName())) {
+            builder.and(workOrder.item.name.eq(request.getItemName()));
+        }
+
+        if (request.getStatus() != null) {
+            builder.and(workOrder.status.eq(request.getStatus()));
+        }
+
+        if (request.getProductionPlanId() != null) {
+            builder.and(workOrder.productionPlan.id.eq(request.getProductionPlanId()));
+        }
+
+        // 정렬 컬럼 매핑
+        Map<String, Path<? extends Comparable<?>>> sortMapping = Map.of(
+                "itemName", workOrder.item.name,
+                "status", workOrder.status,
+                "productionPlanId", workOrder.productionPlan.id);
+
+        List<OrderSpecifier<?>> orders = QuerydslUtils.getSort(pageable.getSort(), sortMapping);
+        if (orders.isEmpty()) {
+            orders.add(workOrder.id.desc()); // 기본 정렬
+        }
+
+        // 실제 데이터 조회
+        List<WorkOrder> content = queryFactory
+                .selectFrom(workOrder)
+                .leftJoin(workOrder.item)
+                .fetchJoin()
+                .leftJoin(workOrder.productionPlan)
+                .fetchJoin()
+                .where(builder)
+                .orderBy(orders.toArray(new OrderSpecifier[0]))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // 카운트 쿼리
+        JPAQuery<Long> countQuery =
+                queryFactory.select(workOrder.count()).from(workOrder).where(builder);
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
-
-    if (request.getStatus() != null) {
-      builder.and(workOrder.status.eq(request.getStatus()));
-    }
-
-    if (request.getProductionPlanId() != null) {
-      builder.and(workOrder.productionPlan.id.eq(request.getProductionPlanId()));
-    }
-
-    // 정렬 컬럼 매핑
-    Map<String, Path<? extends Comparable<?>>> sortMapping = Map.of(
-        "itemName", workOrder.item.name,
-        "status", workOrder.status,
-        "productionPlanId", workOrder.productionPlan.id
-    );
-
-    List<OrderSpecifier<?>> orders = QuerydslUtils.getSort(pageable.getSort(), sortMapping);
-    if (orders.isEmpty()) {
-      orders.add(workOrder.id.desc()); // 기본 정렬
-    }
-
-    // 실제 데이터 조회
-    List<WorkOrder> content = queryFactory
-        .selectFrom(workOrder)
-        .leftJoin(workOrder.item).fetchJoin()
-        .leftJoin(workOrder.productionPlan).fetchJoin()
-        .where(builder)
-        .orderBy(orders.toArray(new OrderSpecifier[0]))
-        .offset(pageable.getOffset())
-        .limit(pageable.getPageSize())
-        .fetch();
-
-    // 카운트 쿼리
-    JPAQuery<Long> countQuery = queryFactory
-        .select(workOrder.count())
-        .from(workOrder)
-        .where(builder);
-
-    return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
-  }
-
-
 }

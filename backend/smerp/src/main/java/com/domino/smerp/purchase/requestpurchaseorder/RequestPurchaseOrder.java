@@ -1,19 +1,15 @@
 package com.domino.smerp.purchase.requestpurchaseorder;
 
 import com.domino.smerp.common.BaseEntity;
-import com.domino.smerp.purchase.itemrequestorder.ItemRequestOrder;
 import com.domino.smerp.purchase.itemrequestpurchaseorder.ItemRequestPurchaseOrder;
-import com.domino.smerp.purchase.requestorder.RequestOrder;
 import com.domino.smerp.purchase.requestpurchaseorder.constants.RequestPurchaseOrderStatus;
 import com.domino.smerp.user.User;
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
@@ -33,8 +29,7 @@ public class RequestPurchaseOrder extends BaseEntity {
 
     // 사용자 (User) 매핑
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false,
-            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
 
     @Column(name = "delivery_date")
@@ -77,9 +72,7 @@ public class RequestPurchaseOrder extends BaseEntity {
     }
 
     public void updateDocumentNo(final LocalDate newDate, int newSequence) {
-        this.documentNo = String.format("%s-%d",
-                newDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")),
-                newSequence);
+        this.documentNo =
+                String.format("%s-%d", newDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd")), newSequence);
     }
-
 }

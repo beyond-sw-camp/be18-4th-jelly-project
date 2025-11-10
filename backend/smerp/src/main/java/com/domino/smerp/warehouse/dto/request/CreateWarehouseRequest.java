@@ -11,16 +11,13 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateWarehouseRequest {
-  @NotNull
-  private final String name;
+    @NotNull private final String name;
 
-  private final DivisionType divisionType;
+    private final DivisionType divisionType;
 
-  private final Boolean active; //수정시 null 가능, getActive
+    private final Boolean active; // 수정시 null 가능, getActive
 
-  @NotNull
-  private final String address;
+    @NotNull private final String address;
 
-  @NotNull
-  private final String zipcode;
+    @NotNull private final String zipcode;
 }

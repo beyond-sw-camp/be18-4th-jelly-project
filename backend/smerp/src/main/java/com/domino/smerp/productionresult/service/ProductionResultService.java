@@ -10,21 +10,18 @@ import java.math.BigDecimal;
 
 public interface ProductionResultService {
 
-  ProductionResultListResponse getAllProductionResults();
+    ProductionResultListResponse getAllProductionResults();
 
-  ProductionResultResponse getProductionResultById(final Long id);
+    ProductionResultResponse getProductionResultById(final Long id);
 
-  ProductionResultResponse createProductionResult(final CreateProductionResultRequest createProductionResultRequest);
+    ProductionResultResponse createProductionResult(final CreateProductionResultRequest createProductionResultRequest);
 
-  ProductionResult createProductionResultByWorkOrder(WorkOrder workOrder, BigDecimal producedQty);
+    ProductionResult createProductionResultByWorkOrder(WorkOrder workOrder, BigDecimal producedQty);
 
-  ProductionResultResponse updateProductionResult(
-      final Long id,
-      final UpdateProductionResultRequest updateProductionResultRequest
-  );
+    ProductionResultResponse updateProductionResult(
+            final Long id, final UpdateProductionResultRequest updateProductionResultRequest);
 
-  void softDeleteProductionResult(final Long id);
+    void softDeleteProductionResult(final Long id);
 
-  void hardDeleteProductionResult(final Long id);
-
+    void hardDeleteProductionResult(final Long id);
 }
