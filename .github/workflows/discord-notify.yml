@@ -1,0 +1,23 @@
+name: Discord Notification
+
+on:
+  issues:
+    types: [opened]
+  push:
+  pull_request:
+    types: [opened]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Discord Notification
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: |
+            ${{ github.actor }}님이 ${{ github.repository }} 저장소의 `${{ github.ref_name }}` 브랜치에서 ${{ github.event_name }}하였습니다.
+            
+            **[GitHub Actions 실행 링크]**(${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            
